@@ -1,4 +1,5 @@
 import { LogoutButton } from "@/components/dashboard/logout-button";
+import { Logo } from "@/components/logo";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -18,8 +19,8 @@ export default async function DashboardLayout({
     <div className="flex min-h-full flex-col">
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-          <Link href="/dashboard" className="font-semibold text-primary">
-            NuntaPlanner
+          <Link href="/dashboard">
+            <Logo />
           </Link>
           <LogoutButton />
         </div>

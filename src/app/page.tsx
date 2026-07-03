@@ -1,4 +1,5 @@
 import { HeaderAuthNav } from "@/components/header-auth-nav";
+import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CalendarHeart, Calculator, ListChecks, Wine } from "lucide-react";
@@ -26,7 +27,7 @@ export default function Home() {
   return (
     <main className="flex-1">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-        <span className="text-lg font-semibold text-primary">NuntaPlanner</span>
+        <Logo />
         <HeaderAuthNav />
       </header>
 

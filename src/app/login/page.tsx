@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Logo } from "@/components/logo";
 import { PasswordInput } from "@/components/ui/password-input";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
@@ -39,8 +40,8 @@ export default function LoginPage() {
     <main className="flex flex-1 items-center justify-center px-6 py-12">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <Link href="/" className="text-sm font-semibold text-primary">
-            NuntaPlanner
+          <Link href="/">
+            <Logo />
           </Link>
           <CardTitle className="mt-2 text-xl">Bine ai revenit</CardTitle>
         </CardHeader>
