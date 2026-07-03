@@ -47,8 +47,38 @@ export default async function OverviewPage({
         )
       : null;
 
+  // Progres de planificare — câte informații-cheie sunt completate.
+  const checks = [
+    !!wedding?.region,
+    wedding?.date_status !== "undecided",
+    (wedding?.wedding_type?.length ?? 0) > 0,
+    !!wedding?.style,
+    (slots?.length ?? 0) > 0,
+    (slots ?? []).some((s) => s.slot_type === "reception"),
+    totalGuests > 0,
+    wedding?.total_budget != null,
+  ];
+  const progress = Math.round(
+    (checks.filter(Boolean).length / checks.length) * 100,
+  );
+
   return (
     <div className="space-y-6">
+      <Card>
+        <CardContent className="pt-5">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-sm font-medium">Progres planificare</span>
+            <span className="text-sm text-muted-foreground">{progress}%</span>
+          </div>
+          <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className="h-full rounded-full bg-primary transition-all"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center gap-2">

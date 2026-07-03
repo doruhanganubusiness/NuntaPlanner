@@ -1,3 +1,4 @@
+import { HeaderAuthNav } from "@/components/header-auth-nav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CalendarHeart, Calculator, ListChecks, Wine } from "lucide-react";
@@ -26,14 +27,7 @@ export default function Home() {
     <main className="flex-1">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <span className="text-lg font-semibold text-primary">NuntaPlanner</span>
-        <nav className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/login">Autentificare</Link>
-          </Button>
-          <Button size="sm" asChild>
-            <Link href="/register">Începe gratuit</Link>
-          </Button>
-        </nav>
+        <HeaderAuthNav />
       </header>
 
       <section className="mx-auto max-w-3xl px-6 pb-10 pt-16 text-center">
