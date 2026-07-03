@@ -37,7 +37,6 @@ export default async function InvitationPage({
             weddingDate={wedding.wedding_date}
             initialCouple={wedding.invitation_couple}
             initialMessage={wedding.invitation_message}
-            initialPublished={wedding.invitation_published}
           />
         </CardContent>
       </Card>

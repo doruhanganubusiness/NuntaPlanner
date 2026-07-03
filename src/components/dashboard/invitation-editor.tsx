@@ -20,14 +20,12 @@ export function InvitationEditor({
   weddingDate,
   initialCouple,
   initialMessage,
-  initialPublished,
 }: {
   weddingId: string;
   weddingName: string;
   weddingDate: string | null;
   initialCouple: string | null;
   initialMessage: string | null;
-  initialPublished: boolean;
 }) {
   const [couple, setCouple] = useState(
     initialCouple || defaultCouple(weddingName),
@@ -35,7 +33,6 @@ export function InvitationEditor({
   const [message, setMessage] = useState(
     initialMessage || DEFAULT_INVITATION_MESSAGE,
   );
-  const [published, setPublished] = useState(initialPublished);
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
 
   const url =
@@ -49,23 +46,13 @@ export function InvitationEditor({
     await api.patch(`/weddings/${weddingId}`, {
       invitation_couple: couple || null,
       invitation_message: message || null,
-      invitation_published: published,
+      invitation_published: true,
     });
     setStatus("saved");
   }
 
   return (
     <div className="space-y-5">
-      <label className="flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          checked={published}
-          onChange={(e) => setPublished(e.target.checked)}
-          className="h-4 w-4 accent-[var(--primary)]"
-        />
-        Publică invitația (invitații o pot vedea prin link)
-      </label>
-
       <div>
         <Label htmlFor="couple">Numele mirilor</Label>
         <Input
@@ -98,27 +85,20 @@ export function InvitationEditor({
         )}
       </div>
 
-      {published ? (
-        <div className="space-y-3 rounded-md border border-border p-4">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium">Invitația ta e publicată 🎉</p>
-            <a
-              href={url}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-            >
-              Vezi invitația <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-          </div>
-          <InvitationShare url={url} couple={couple} dateStr={dateStr} />
+      <div className="space-y-3 rounded-md border border-border p-4">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-medium">Invitația ta 🎉</p>
+          <a
+            href={url}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+          >
+            Vezi invitația <ExternalLink className="h-3.5 w-3.5" />
+          </a>
         </div>
-      ) : (
-        <p className="text-sm text-muted-foreground">
-          Publică invitația (bifează sus și salvează) ca să o poți trimite pe
-          WhatsApp.
-        </p>
-      )}
+        <InvitationShare url={url} couple={couple} dateStr={dateStr} />
+      </div>
     </div>
   );
 }
