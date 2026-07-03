@@ -47,6 +47,7 @@ type SlotDraft = {
   guests_children: number;
   duration_hours: number | null;
   location_name: string;
+  location_address: string;
   serves_alcohol: boolean;
   serves_full_meal: boolean;
 };
@@ -63,6 +64,7 @@ function newSlot(type: SlotTypeDb): SlotDraft {
     guests_children: 0,
     duration_hours: d.duration_minutes != null ? d.duration_minutes / 60 : null,
     location_name: "",
+    location_address: "",
     serves_alcohol: d.serves_alcohol,
     serves_full_meal: d.serves_full_meal,
   };
@@ -155,6 +157,7 @@ export function OnboardingForm() {
           duration_minutes:
             s.duration_hours != null ? Math.round(s.duration_hours * 60) : null,
           location_name: s.location_name || null,
+          location_address: s.location_address || null,
           serves_alcohol: s.serves_alcohol,
           serves_full_meal: s.serves_full_meal,
           order_index: order++,
@@ -358,15 +361,27 @@ export function OnboardingForm() {
                 )}
               </div>
 
-              <div className="mt-3">
-                <Label>Locație</Label>
-                <Input
-                  value={s.location_name}
-                  placeholder="ex. Biserica Sf. Nicolae"
-                  onChange={(e) =>
-                    patchSlot(s.key, { location_name: e.target.value })
-                  }
-                />
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <div>
+                  <Label>Locație (nume)</Label>
+                  <Input
+                    value={s.location_name}
+                    placeholder="ex. Biserica Sf. Nicolae"
+                    onChange={(e) =>
+                      patchSlot(s.key, { location_name: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Adresă</Label>
+                  <Input
+                    value={s.location_address}
+                    placeholder="ex. Str. Bisericii nr. 12, Cluj"
+                    onChange={(e) =>
+                      patchSlot(s.key, { location_address: e.target.value })
+                    }
+                  />
+                </div>
               </div>
 
               <div className="mt-3 flex flex-wrap gap-4">

@@ -113,6 +113,7 @@ function SlotCard({
         slot_time: slot.slot_time ? slot.slot_time.slice(0, 5) : null,
         duration_minutes: slot.duration_minutes,
         location_name: slot.location_name ?? null,
+        location_address: slot.location_address ?? null,
         guests_adults: slot.guests_adults,
         guests_children: slot.guests_children,
         serves_alcohol: slot.serves_alcohol,
@@ -232,11 +233,19 @@ function SlotCard({
         </div>
 
         <div>
-          <Label>Locație</Label>
+          <Label>Locație (nume)</Label>
           <Input
             value={slot.location_name ?? ""}
             placeholder="ex. Biserica Sf. Nicolae"
             onChange={(e) => onLocalChange({ location_name: e.target.value })}
+          />
+        </div>
+        <div>
+          <Label>Adresă</Label>
+          <Input
+            value={slot.location_address ?? ""}
+            placeholder="ex. Str. Bisericii nr. 12, Cluj-Napoca"
+            onChange={(e) => onLocalChange({ location_address: e.target.value })}
           />
         </div>
 
