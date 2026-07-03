@@ -1,4 +1,5 @@
 import { InvitationShare } from "@/components/dashboard/invitation-share";
+import { RsvpForm } from "@/components/dashboard/rsvp-form";
 import { scriptFont, serifFont } from "@/lib/fonts";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { EventSlotRow } from "@/lib/supabase/database.types";
@@ -160,6 +161,10 @@ export default async function InvitationPage({
           <div className="mt-8 flex justify-center print:hidden">
             <InvitationShare couple={couple} dateStr={dateStr} />
           </div>
+        </div>
+
+        <div className="mt-6 print:hidden">
+          <RsvpForm weddingId={id} />
         </div>
         <p className="mt-6 text-center text-xs text-[var(--muted-foreground)]">
           Creat cu NuntaPlanner

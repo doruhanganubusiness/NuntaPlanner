@@ -123,6 +123,16 @@ export type LocalityRow = {
   name: string;
 };
 
+export type RsvpRow = {
+  id: string;
+  wedding_id: string;
+  guest_name: string;
+  attending: boolean;
+  guests_count: number;
+  message: string | null;
+  created_at: string;
+};
+
 type TableShape<Row, Insert, Update> = {
   Row: Row;
   Insert: Insert;
@@ -179,6 +189,11 @@ export interface Database {
           name: string;
         },
         Partial<LocalityRow>
+      >;
+      rsvps: TableShape<
+        RsvpRow,
+        Partial<RsvpRow> & { wedding_id: string; guest_name: string },
+        Partial<RsvpRow>
       >;
     };
     Views: Record<string, never>;
