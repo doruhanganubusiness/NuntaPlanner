@@ -161,10 +161,14 @@ export default async function PlanPage({
         {/* Dulciuri */}
         <Card>
           <CardHeader>
-            <CardTitle>Dulciuri & tort</CardTitle>
+            <CardTitle>Dulciuri, tort & mărturii</CardTitle>
           </CardHeader>
           <CardContent>
             <Line label="Tort" value={`${formatNum(r.sweets.totals.cakeKg)} kg`} />
+            <Line
+              label="Mărturii"
+              value={`${formatNum(r.sweets.totals.favors)} buc.`}
+            />
             <Line
               label="Candy bar"
               value={`${formatNum(r.sweets.totals.candyBarKg)} kg`}

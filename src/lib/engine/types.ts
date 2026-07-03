@@ -93,10 +93,12 @@ export interface EngineConfig {
   // --- băutură: cost (5.2) ---
   drinkCostPerPersonRON: number; // pret_bautura_inclusa (regional)
 
-  // --- dulciuri / tort (5.3) ---
+  // --- dulciuri / tort / mărturii (5.3) ---
   cakeGramsPerPerson: number; // 120 g
   candyBarKgPerPerson: number; // 0.15 kg
   civilSweetsKgPerGuest: number; // 0.10 kg
+  favorsPerGuest: number; // 1 mărturie / invitat
+  favorsBufferPct: number; // buffer suplimentar (ex. 0.05)
 
   // --- sală (5.4) ---
   venueSqmFactor: number; // 1.8 mp/invitat
@@ -170,6 +172,7 @@ export interface SlotSweets {
   civilSweetsKg?: number;
   champagneBottles?: number;
   glasses?: number;
+  favors?: number;
 }
 
 export interface SweetsResult {
@@ -179,6 +182,7 @@ export interface SweetsResult {
     candyBarKg: number;
     civilSweetsKg: number;
     champagneBottles: number;
+    favors: number;
   };
 }
 

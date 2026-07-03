@@ -45,6 +45,8 @@ export const DEFAULT_CONFIG: EngineConfig = {
   cakeGramsPerPerson: 120,
   candyBarKgPerPerson: 0.15,
   civilSweetsKgPerGuest: 0.1,
+  favorsPerGuest: 1,
+  favorsBufferPct: 0.05,
 
   // sală (5.4)
   venueSqmFactor: 1.8,

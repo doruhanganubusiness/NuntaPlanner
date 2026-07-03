@@ -21,8 +21,10 @@ describe("computeSweets (5.3)", () => {
     const slot = res.perSlot[0];
     expect(slot.cakeKg).toBe(15); // ceil(120 × 120 / 1000) = ceil(14.4)
     expect(slot.candyBarKg).toBe(18); // 120 × 0.15
+    expect(slot.favors).toBe(126); // ceil(120 × 1 × 1.05)
     expect(res.totals.cakeKg).toBe(15);
     expect(res.totals.candyBarKg).toBe(18);
+    expect(res.totals.favors).toBe(126);
   });
 
   it("dulciuri, șampanie și pahare pentru ceremonie", () => {

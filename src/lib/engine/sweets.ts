@@ -23,6 +23,7 @@ export function computeSweets(
     candyBarKg: 0,
     civilSweetsKg: 0,
     champagneBottles: 0,
+    favors: 0,
   };
 
   for (const s of input.slots ?? []) {
@@ -41,10 +42,14 @@ export function computeSweets(
     if (s.slot_type === "reception") {
       const cakeKg = ceil((guests * cfg.cakeGramsPerPerson) / 1000);
       const candyBarKg = round(guests * cfg.candyBarKgPerPerson, 2);
+      // Mărturii: 1 per invitat + buffer (nu vrei să rămâi fără).
+      const favors = ceil(guests * cfg.favorsPerGuest * (1 + cfg.favorsBufferPct));
       entry.cakeKg = cakeKg;
       entry.candyBarKg = candyBarKg;
+      entry.favors = favors;
       totals.cakeKg += cakeKg;
       totals.candyBarKg += candyBarKg;
+      totals.favors += favors;
     } else {
       // civil_ceremony / religious_ceremony / baptism
       const civilSweetsKg = round(guests * cfg.civilSweetsKgPerGuest, 2);
@@ -66,6 +71,7 @@ export function computeSweets(
       candyBarKg: round(totals.candyBarKg, 2),
       civilSweetsKg: round(totals.civilSweetsKg, 2),
       champagneBottles: totals.champagneBottles,
+      favors: totals.favors,
     },
   };
 }
