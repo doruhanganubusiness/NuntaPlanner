@@ -1,3 +1,4 @@
+import { DeleteWeddingButton } from "@/components/dashboard/delete-wedding-button";
 import { OnboardingForm } from "@/components/dashboard/onboarding-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,22 +42,27 @@ export default async function DashboardHome() {
       </div>
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {list.map((w) => (
-          <Link key={w.id} href={`/dashboard/${w.id}`}>
-            <Card className="transition-colors hover:border-primary">
-              <CardHeader>
-                <CalendarHeart className="h-6 w-6 text-primary" />
-                <CardTitle className="mt-2">{w.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  {w.locality
-                    ? `${w.locality}, ${w.county}`
-                    : (w.county ?? "Locație necompletată")}{" "}
-                  · {w.wedding_date ?? "dată nestabilită"}
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
+          <div key={w.id} className="relative">
+            <Link href={`/dashboard/${w.id}`} className="block">
+              <Card className="transition-colors hover:border-primary">
+                <CardHeader>
+                  <CalendarHeart className="h-6 w-6 text-primary" />
+                  <CardTitle className="mt-2 pr-8">{w.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    {w.locality
+                      ? `${w.locality}, ${w.county}`
+                      : (w.county ?? "Locație necompletată")}{" "}
+                    · {w.wedding_date ?? "dată nestabilită"}
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+            <div className="absolute right-2 top-2">
+              <DeleteWeddingButton weddingId={w.id} iconOnly />
+            </div>
+          </div>
         ))}
       </div>
     </main>
