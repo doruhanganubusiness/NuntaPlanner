@@ -1,5 +1,6 @@
 import { fail, ok, readJson, requireUser } from "@/lib/api/http";
 import { createMemberSchema } from "@/lib/api/schemas";
+import { sendInviteEmail } from "@/lib/email/resend";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -43,6 +44,25 @@ export async function POST(req: Request, { params }: Ctx) {
     .maybeSingle();
 
   if (error) return fail(error.message, 400);
+
+  // Trimite emailul de invitație (best-effort — nu blochează dacă eșuează).
+  let emailSent = false;
+  if (data) {
+    const { data: wedding } = await supabase
+      .from("weddings")
+      .select("name")
+      .eq("id", id)
+      .maybeSingle();
+    const origin =
+      req.headers.get("origin") ?? new URL(req.url).origin;
+    const result = await sendInviteEmail({
+      to: data.email,
+      inviteUrl: `${origin}/invite/${data.invite_token}`,
+      weddingName: wedding?.name ?? "nunta",
+    });
+    emailSent = result.sent;
+  }
+
   // `invite_token` din răspuns se folosește pentru linkul de invitație.
-  return ok({ member: data }, 201);
+  return ok({ member: data, email_sent: emailSent }, 201);
 }

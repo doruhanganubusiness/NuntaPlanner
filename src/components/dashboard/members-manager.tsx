@@ -31,6 +31,7 @@ export function MembersManager({
   const [role, setRole] = useState("parent");
   const [permission, setPermission] = useState("viewer");
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -49,13 +50,19 @@ export function MembersManager({
     e.preventDefault();
     setBusy(true);
     setError(null);
+    setNotice(null);
     try {
-      const { member } = await api.post<{ member: WeddingMemberRow }>(
-        `/weddings/${weddingId}/members`,
-        { email, role, permission },
-      );
+      const { member, email_sent } = await api.post<{
+        member: WeddingMemberRow;
+        email_sent: boolean;
+      }>(`/weddings/${weddingId}/members`, { email, role, permission });
       setMembers((m) => [...m, member]);
       setEmail("");
+      setNotice(
+        email_sent
+          ? "Invitație trimisă pe email ✓"
+          : "Membru adăugat. Emailul nu a putut fi trimis — folosește „Copiază link”.",
+      );
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Eroare");
@@ -158,6 +165,7 @@ export function MembersManager({
           </div>
         </div>
         {error && <p className="text-sm text-destructive">{error}</p>}
+        {notice && <p className="text-sm text-muted-foreground">{notice}</p>}
         <Button type="submit" disabled={busy}>
           {busy ? "Se trimite…" : "Trimite invitația"}
         </Button>
