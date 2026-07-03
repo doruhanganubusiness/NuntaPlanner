@@ -44,7 +44,7 @@ export default async function InvitationPage({
 
       <Card>
         <CardHeader>
-          <CardTitle>Confirmări (RSVP)</CardTitle>
+          <CardTitle>Confirmări primite</CardTitle>
         </CardHeader>
         <CardContent>
           <RsvpList initial={rsvps ?? []} />
