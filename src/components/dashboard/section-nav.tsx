@@ -10,6 +10,7 @@ const items = [
   { seg: "slots", label: "Sloturi" },
   { seg: "budget", label: "Buget" },
   { seg: "plan", label: "Planul generat" },
+  { seg: "invitation", label: "Invitație" },
   { seg: "members", label: "Membri" },
 ];
 

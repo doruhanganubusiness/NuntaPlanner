@@ -62,6 +62,9 @@ export const updateWeddingSchema = z
     drink_mode: drinkMode,
     budget_priorities: z.array(budgetCategory).nullable(),
     music_choice: z.enum(["dj", "band", "band_and_dj"]).nullable(),
+    invitation_couple: z.string().nullable(),
+    invitation_message: z.string().nullable(),
+    invitation_published: z.boolean(),
   })
   .partial();
 

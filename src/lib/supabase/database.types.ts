@@ -61,6 +61,9 @@ export type WeddingRow = {
   drink_mode: DrinkModeDb;
   budget_priorities: Json | null;
   music_choice: MusicChoiceDb | null;
+  invitation_couple: string | null;
+  invitation_message: string | null;
+  invitation_published: boolean;
   created_at: string;
   updated_at: string;
 };
