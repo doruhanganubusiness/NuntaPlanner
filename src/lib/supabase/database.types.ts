@@ -51,6 +51,9 @@ export type WeddingRow = {
   estimated_year: number | null;
   wedding_type: string[];
   region: string | null;
+  county_code: string | null;
+  county: string | null;
+  locality: string | null;
   style: WeddingStyle | null;
   total_budget: number | null;
   currency: string;
@@ -108,6 +111,13 @@ export type ConfigParameterRow = {
   created_at: string;
 };
 
+export type LocalityRow = {
+  id: number;
+  county_code: string;
+  county: string;
+  name: string;
+};
+
 type TableShape<Row, Insert, Update> = {
   Row: Row;
   Insert: Insert;
@@ -155,6 +165,15 @@ export interface Database {
         ConfigParameterRow,
         Partial<ConfigParameterRow> & { key: string; value: Json },
         Partial<ConfigParameterRow>
+      >;
+      localities: TableShape<
+        LocalityRow,
+        Partial<LocalityRow> & {
+          county_code: string;
+          county: string;
+          name: string;
+        },
+        Partial<LocalityRow>
       >;
     };
     Views: Record<string, never>;

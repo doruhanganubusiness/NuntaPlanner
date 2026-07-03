@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { computeBudget } from "../budget";
 import { DEFAULT_CONFIG } from "../config";
+import { computeMusic } from "../music";
 import { computeSanity } from "../sanity";
 import type { WeddingInput } from "../types";
 
 function run(input: WeddingInput) {
-  const budget = computeBudget(input, DEFAULT_CONFIG);
+  const music = computeMusic(input, DEFAULT_CONFIG);
+  const budget = computeBudget(input, DEFAULT_CONFIG, music);
   return computeSanity(input, DEFAULT_CONFIG, budget);
 }
 

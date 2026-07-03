@@ -189,15 +189,20 @@ function SlotCard({
           </div>
           {isReception && (
             <div>
-              <Label>Durată (minute)</Label>
+              <Label>Durată (ore)</Label>
               <Input
                 type="number"
                 min={0}
-                value={slot.duration_minutes ?? ""}
+                step={0.5}
+                value={
+                  slot.duration_minutes != null
+                    ? slot.duration_minutes / 60
+                    : ""
+                }
                 onChange={(e) =>
                   onLocalChange({
                     duration_minutes: e.target.value
-                      ? Number(e.target.value)
+                      ? Math.round(Number(e.target.value) * 60)
                       : null,
                   })
                 }

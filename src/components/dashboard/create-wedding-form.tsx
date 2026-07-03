@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  LocalityPicker,
+  type LocalityValue,
+} from "@/components/dashboard/locality-picker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +15,11 @@ import { useState } from "react";
 export function CreateWeddingForm() {
   const router = useRouter();
   const [name, setName] = useState("");
-  const [region, setRegion] = useState("");
+  const [place, setPlace] = useState<LocalityValue>({
+    county_code: null,
+    county: null,
+    locality: null,
+  });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -22,8 +30,17 @@ export function CreateWeddingForm() {
     try {
       const { wedding } = await api.post<{ wedding: WeddingRow }>("/weddings", {
         name,
-        region: region || undefined,
+        region: place.county ?? undefined,
       });
+      // Salvează județul/localitatea aleasă pe nunta nou creată.
+      if (place.county_code) {
+        await api.patch(`/weddings/${wedding.id}`, {
+          county_code: place.county_code,
+          county: place.county,
+          locality: place.locality,
+          region: place.county,
+        });
+      }
       router.push(`/dashboard/${wedding.id}`);
       router.refresh();
     } catch (err) {
@@ -45,13 +62,8 @@ export function CreateWeddingForm() {
         />
       </div>
       <div>
-        <Label htmlFor="region">Regiunea (oraș / județ)</Label>
-        <Input
-          id="region"
-          placeholder="Cluj"
-          value={region}
-          onChange={(e) => setRegion(e.target.value)}
-        />
+        <Label>Locația nunții</Label>
+        <LocalityPicker value={place} onChange={setPlace} />
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <Button type="submit" disabled={loading}>

@@ -60,16 +60,31 @@ export const DEFAULT_CONFIG: EngineConfig = {
   bandGuestThresholdHigh: 200,
 
   // alocare buget (5.6) — sumă = 1.00 (băutura inclusă doar dacă mod `cost`)
+  // Profil implicit (DJ): locația > 51%, ținute ≥ 8%, muzică 6%.
   budgetAllocation: {
-    venue_catering: 0.48,
-    music: 0.09,
+    venue_catering: 0.52,
+    music: 0.06,
     photo_video: 0.11,
-    decor_flowers: 0.09,
+    decor_flowers: 0.08,
     attire: 0.08,
     drinks: 0.06,
     invitations_favors_cake: 0.05,
     misc: 0.04,
   },
+  // Profil cu formație live: muzica > 10-11%, locația rămâne > 51%.
+  budgetAllocationBand: {
+    venue_catering: 0.52,
+    music: 0.11,
+    photo_video: 0.1,
+    decor_flowers: 0.07,
+    attire: 0.08,
+    drinks: 0.05,
+    invitations_favors_cake: 0.04,
+    misc: 0.03,
+  },
+
+  // buget recomandat
+  cateringTypicalPerPersonRON: 300,
 
   // sanity checks (5.7)
   cateringMinPerPersonRON: 150,

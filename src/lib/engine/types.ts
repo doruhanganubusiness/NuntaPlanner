@@ -107,7 +107,12 @@ export interface EngineConfig {
   bandGuestThresholdHigh: number; // 200
 
   // --- alocare buget (5.6) ---
+  // Profil implicit (DJ) și profil cu formație live (muzica are pondere mai mare).
   budgetAllocation: Record<BudgetCategoryKey, number>;
+  budgetAllocationBand: Record<BudgetCategoryKey, number>;
+
+  // --- buget recomandat ---
+  cateringTypicalPerPersonRON: number; // cost tipic/persoană catering (regional)
 
   // --- sanity checks (5.7) ---
   cateringMinPerPersonRON: number; // prag_minim_regiune
@@ -203,7 +208,14 @@ export interface BudgetCategoryAllocation {
 }
 
 export interface BudgetResult {
+  /** Bugetul introdus de miri (null dacă nu au completat). */
   totalBudgetRON: number | null;
+  /** Bugetul recomandat de platformă în funcție de invitați și necesități. */
+  recommendedTotalRON: number | null;
+  /** Bugetul folosit pentru alocare = cel introdus, altfel cel recomandat. */
+  effectiveTotalRON: number | null;
+  /** True dacă alocarea se bazează pe bugetul recomandat (mirii nu au introdus unul). */
+  usingRecommended: boolean;
   allocations: BudgetCategoryAllocation[];
 }
 

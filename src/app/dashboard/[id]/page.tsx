@@ -96,7 +96,11 @@ export default async function OverviewPage({
                 : "Nestabilită"}
             </p>
             <p className="text-sm text-muted-foreground">
-              {wedding?.wedding_date ?? "Adaugă data în Detalii"}
+              {wedding?.wedding_date
+                ? wedding.date_status === "estimated"
+                  ? `${wedding.wedding_date} (dată estimată)`
+                  : wedding.wedding_date
+                : "Adaugă data în Detalii"}
             </p>
           </CardContent>
         </Card>
@@ -125,12 +129,18 @@ export default async function OverviewPage({
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">
-              {formatRON(wedding?.total_budget ?? null)}
+              {formatRON(
+                results?.budget?.effectiveTotalRON ??
+                  wedding?.total_budget ??
+                  null,
+              )}
             </p>
             <p className="text-sm text-muted-foreground">
-              {wedding?.drink_mode === "cost"
-                ? "Băutură inclusă în meniu"
-                : "Băutură calculată separat"}
+              {results?.budget?.usingRecommended
+                ? "Buget recomandat (poți introduce al tău)"
+                : wedding?.drink_mode === "cost"
+                  ? "Băutură inclusă în meniu"
+                  : "Băutură calculată separat"}
             </p>
           </CardContent>
         </Card>

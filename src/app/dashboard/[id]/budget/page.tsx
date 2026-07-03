@@ -3,6 +3,7 @@ import { Donut, type DonutSegment } from "@/components/dashboard/donut";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCalculations } from "@/lib/wedding/calculations";
 import { createClient } from "@/lib/supabase/server";
+import { formatRON } from "@/lib/utils";
 import { notFound } from "next/navigation";
 
 export default async function BudgetPage({
@@ -20,8 +21,9 @@ export default async function BudgetPage({
   if (!wedding) notFound();
 
   const calc = await getCalculations(supabase, id);
+  const budget = calc?.results.budget;
   const segments: DonutSegment[] =
-    calc?.results.budget?.allocations.map((a) => ({
+    budget?.allocations.map((a) => ({
       label: a.label,
       pct: a.pct,
       amount: a.amountRON,
@@ -34,7 +36,10 @@ export default async function BudgetPage({
           <CardTitle>Buget & priorități</CardTitle>
         </CardHeader>
         <CardContent>
-          <BudgetForm wedding={wedding} />
+          <BudgetForm
+            wedding={wedding}
+            recommendedTotal={budget?.recommendedTotalRON ?? null}
+          />
         </CardContent>
       </Card>
 
@@ -43,11 +48,19 @@ export default async function BudgetPage({
           <CardTitle>Alocare estimată</CardTitle>
         </CardHeader>
         <CardContent>
-          {segments.length > 0 ? (
-            <Donut segments={segments} />
+          {segments.length > 0 && budget?.effectiveTotalRON != null ? (
+            <>
+              <p className="mb-3 text-sm text-muted-foreground">
+                {budget.usingRecommended
+                  ? "Pe baza bugetului recomandat"
+                  : "Pe baza bugetului tău"}
+                : <b className="text-foreground">{formatRON(budget.effectiveTotalRON)}</b>
+              </p>
+              <Donut segments={segments} />
+            </>
           ) : (
             <p className="text-sm text-muted-foreground">
-              Completează bugetul pentru a vedea alocarea.
+              Adaugă un slot de petrecere cu invitați pentru a vedea alocarea.
             </p>
           )}
         </CardContent>

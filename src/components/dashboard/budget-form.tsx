@@ -7,6 +7,7 @@ import { Select } from "@/components/ui/select";
 import { api } from "@/lib/api/client";
 import { BUDGET_LABELS, type BudgetCategoryKey } from "@/lib/engine";
 import type { WeddingRow } from "@/lib/supabase/database.types";
+import { formatRON } from "@/lib/utils";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -22,7 +23,13 @@ const ALL_CATEGORIES: BudgetCategoryKey[] = [
   "misc",
 ];
 
-export function BudgetForm({ wedding }: { wedding: WeddingRow }) {
+export function BudgetForm({
+  wedding,
+  recommendedTotal,
+}: {
+  wedding: WeddingRow;
+  recommendedTotal: number | null;
+}) {
   const router = useRouter();
   const [total, setTotal] = useState(
     wedding.total_budget != null ? String(wedding.total_budget) : "",
@@ -54,14 +61,25 @@ export function BudgetForm({ wedding }: { wedding: WeddingRow }) {
 
   return (
     <div className="space-y-5">
+      {recommendedTotal != null && (
+        <div className="rounded-md bg-accent px-3 py-2 text-sm text-accent-foreground">
+          💡 Buget recomandat pentru nunta ta:{" "}
+          <b>{formatRON(recommendedTotal)}</b>
+          {!total && " — îl folosim dacă nu introduci altul."}
+        </div>
+      )}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <Label htmlFor="total">Buget total (RON)</Label>
+          <Label htmlFor="total">Bugetul tău (RON) — opțional</Label>
           <Input
             id="total"
             type="number"
             min={0}
-            placeholder="ex. 120000"
+            placeholder={
+              recommendedTotal != null
+                ? `Recomandat: ${recommendedTotal}`
+                : "ex. 120000"
+            }
             value={total}
             onChange={(e) => setTotal(e.target.value)}
           />

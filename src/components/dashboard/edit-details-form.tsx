@@ -8,6 +8,10 @@ import { api } from "@/lib/api/client";
 import type { WeddingRow } from "@/lib/supabase/database.types";
 import { WEDDING_STYLE_OPTIONS } from "@/lib/wedding/labels";
 import { useState } from "react";
+import {
+  LocalityPicker,
+  type LocalityValue,
+} from "@/components/dashboard/locality-picker";
 
 const TYPES = [
   { value: "civil", label: "Civilă" },
@@ -19,7 +23,11 @@ export function EditDetailsForm({ wedding }: { wedding: WeddingRow }) {
   const [name, setName] = useState(wedding.name);
   const [dateStatus, setDateStatus] = useState(wedding.date_status);
   const [weddingDate, setWeddingDate] = useState(wedding.wedding_date ?? "");
-  const [region, setRegion] = useState(wedding.region ?? "");
+  const [place, setPlace] = useState<LocalityValue>({
+    county_code: wedding.county_code,
+    county: wedding.county,
+    locality: wedding.locality,
+  });
   const [style, setStyle] = useState(wedding.style ?? "");
   const [types, setTypes] = useState<string[]>(wedding.wedding_type ?? []);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">(
@@ -38,8 +46,13 @@ export function EditDetailsForm({ wedding }: { wedding: WeddingRow }) {
       await api.patch(`/weddings/${wedding.id}`, {
         name,
         date_status: dateStatus,
-        wedding_date: dateStatus === "set" && weddingDate ? weddingDate : null,
-        region: region || null,
+        wedding_date:
+          dateStatus !== "undecided" && weddingDate ? weddingDate : null,
+        county_code: place.county_code,
+        county: place.county,
+        locality: place.locality,
+        // `region` = județul, folosit de motor pentru config regional.
+        region: place.county,
         style: style || null,
         wedding_type: types,
       });
@@ -62,7 +75,7 @@ export function EditDetailsForm({ wedding }: { wedding: WeddingRow }) {
       </div>
 
       <div>
-        <Label>Tipul nunții</Label>
+        <Label>Nunta include</Label>
         <div className="flex flex-wrap gap-3">
           {TYPES.map((t) => (
             <label key={t.value} className="flex items-center gap-2 text-sm">
@@ -93,25 +106,28 @@ export function EditDetailsForm({ wedding }: { wedding: WeddingRow }) {
         </Select>
       </div>
 
-      {dateStatus === "set" && (
+      {dateStatus !== "undecided" && (
         <div>
-          <Label htmlFor="wedding_date">Data exactă</Label>
+          <Label htmlFor="wedding_date">
+            {dateStatus === "estimated" ? "Data estimată" : "Data exactă"}
+          </Label>
           <Input
             id="wedding_date"
             type="date"
             value={weddingDate}
             onChange={(e) => setWeddingDate(e.target.value)}
           />
+          {dateStatus === "estimated" && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              O vom afișa cu mențiunea „Dată estimată".
+            </p>
+          )}
         </div>
       )}
 
       <div>
-        <Label htmlFor="region">Regiunea</Label>
-        <Input
-          id="region"
-          value={region}
-          onChange={(e) => setRegion(e.target.value)}
-        />
+        <Label>Locația nunții</Label>
+        <LocalityPicker value={place} onChange={setPlace} />
       </div>
 
       <div>

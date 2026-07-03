@@ -30,7 +30,7 @@ export function computeWedding(
   const sweets = computeSweets(input, cfg);
   const venue = computeVenue(input, cfg);
   const music = computeMusic(input, cfg);
-  const budget = computeBudget(input, cfg);
+  const budget = computeBudget(input, cfg, music);
   const { warnings, notes } = computeSanity(input, cfg, budget);
 
   return {
