@@ -15,6 +15,12 @@ export type LocalityValue = {
 
 const CUSTOM = "__custom__";
 
+// Județele ordonate alfabetic (colație românească) — București iese între
+// Brăila și Buzău, nu la final.
+const SORTED_COUNTIES = [...COUNTIES].sort((a, b) =>
+  a.name.localeCompare(b.name, "ro"),
+);
+
 /**
  * Selector în cascadă: județ → localitate (filtrată după județ), cu opțiunea de a
  * adăuga o localitate care nu e în listă (ex. un sat mic).
@@ -84,7 +90,7 @@ export function LocalityPicker({
           onChange={(e) => selectCounty(e.target.value)}
         >
           <option value="">Alege județul…</option>
-          {COUNTIES.map((c) => (
+          {SORTED_COUNTIES.map((c) => (
             <option key={c.code} value={c.code}>
               {c.name}
             </option>
