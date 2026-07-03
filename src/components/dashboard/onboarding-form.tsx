@@ -1,9 +1,5 @@
 "use client";
 
-import {
-  LocalityPicker,
-  type LocalityValue,
-} from "@/components/dashboard/locality-picker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -79,11 +75,6 @@ export function OnboardingForm() {
   const [dateStatus, setDateStatus] =
     useState<WeddingRow["date_status"]>("undecided");
   const [weddingDate, setWeddingDate] = useState("");
-  const [place, setPlace] = useState<LocalityValue>({
-    county_code: null,
-    county: null,
-    locality: null,
-  });
   const [style, setStyle] = useState("");
 
   // Sloturi
@@ -130,17 +121,12 @@ export function OnboardingForm() {
     try {
       const { wedding } = await api.post<{ wedding: WeddingRow }>("/weddings", {
         name,
-        region: place.county ?? undefined,
       });
       await api.patch(`/weddings/${wedding.id}`, {
         wedding_type: types,
         date_status: dateStatus,
         wedding_date:
           dateStatus !== "undecided" && weddingDate ? weddingDate : null,
-        county_code: place.county_code,
-        county: place.county,
-        locality: place.locality,
-        region: place.county,
         style: style || null,
         total_budget: total ? Number(total) : null,
         drink_mode: drinkMode,
@@ -233,10 +219,6 @@ export function OnboardingForm() {
                 />
               </div>
             )}
-          </div>
-          <div>
-            <Label>Locația nunții</Label>
-            <LocalityPicker value={place} onChange={setPlace} />
           </div>
           <div>
             <Label htmlFor="style">Stil</Label>

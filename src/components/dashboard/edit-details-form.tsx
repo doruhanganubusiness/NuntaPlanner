@@ -8,10 +8,6 @@ import { api } from "@/lib/api/client";
 import type { WeddingRow } from "@/lib/supabase/database.types";
 import { WEDDING_STYLE_OPTIONS } from "@/lib/wedding/labels";
 import { useState } from "react";
-import {
-  LocalityPicker,
-  type LocalityValue,
-} from "@/components/dashboard/locality-picker";
 
 const TYPES = [
   { value: "civil", label: "Civilă" },
@@ -23,11 +19,6 @@ export function EditDetailsForm({ wedding }: { wedding: WeddingRow }) {
   const [name, setName] = useState(wedding.name);
   const [dateStatus, setDateStatus] = useState(wedding.date_status);
   const [weddingDate, setWeddingDate] = useState(wedding.wedding_date ?? "");
-  const [place, setPlace] = useState<LocalityValue>({
-    county_code: wedding.county_code,
-    county: wedding.county,
-    locality: wedding.locality,
-  });
   const [style, setStyle] = useState(wedding.style ?? "");
   const [types, setTypes] = useState<string[]>(wedding.wedding_type ?? []);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">(
@@ -48,11 +39,6 @@ export function EditDetailsForm({ wedding }: { wedding: WeddingRow }) {
         date_status: dateStatus,
         wedding_date:
           dateStatus !== "undecided" && weddingDate ? weddingDate : null,
-        county_code: place.county_code,
-        county: place.county,
-        locality: place.locality,
-        // `region` = județul, folosit de motor pentru config regional.
-        region: place.county,
         style: style || null,
         wedding_type: types,
       });
@@ -124,11 +110,6 @@ export function EditDetailsForm({ wedding }: { wedding: WeddingRow }) {
           )}
         </div>
       )}
-
-      <div>
-        <Label>Locația nunții</Label>
-        <LocalityPicker value={place} onChange={setPlace} />
-      </div>
 
       <div>
         <Label htmlFor="style">Stil</Label>

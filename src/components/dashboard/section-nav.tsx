@@ -9,7 +9,7 @@ const items = [
   { seg: "details", label: "Detalii" },
   { seg: "slots", label: "Sloturi" },
   { seg: "budget", label: "Buget" },
-  { seg: "plan", label: "Planul generat" },
+  { seg: "plan", label: "Plan" },
   { seg: "invitation", label: "Invitație" },
   { seg: "members", label: "Membri" },
 ];
@@ -19,21 +19,20 @@ export function SectionNav({ weddingId }: { weddingId: string }) {
   const base = `/dashboard/${weddingId}`;
 
   return (
-    <nav className="flex gap-1 overflow-x-auto border-b border-border">
+    // Pastile care se aranjează pe mai multe rânduri — toate tab-urile vizibile pe mobil.
+    <nav className="flex flex-wrap gap-2">
       {items.map((it) => {
         const href = it.seg ? `${base}/${it.seg}` : base;
-        const active = it.seg
-          ? pathname.startsWith(href)
-          : pathname === base;
+        const active = it.seg ? pathname.startsWith(href) : pathname === base;
         return (
           <Link
             key={it.seg}
             href={href}
             className={cn(
-              "whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition-colors",
+              "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
               active
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground",
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground",
             )}
           >
             {it.label}

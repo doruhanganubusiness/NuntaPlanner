@@ -51,10 +51,7 @@ export default async function DashboardHome() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    {w.locality
-                      ? `${w.locality}, ${w.county}`
-                      : (w.county ?? "Locație necompletată")}{" "}
-                    · {w.wedding_date ?? "dată nestabilită"}
+                    {w.wedding_date ?? "Dată nestabilită"}
                   </p>
                 </CardContent>
               </Card>
