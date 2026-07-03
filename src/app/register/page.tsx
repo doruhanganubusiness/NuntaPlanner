@@ -42,7 +42,8 @@ export default function RegisterPage() {
       return;
     }
     if (data.session) {
-      router.push("/dashboard");
+      const next = new URLSearchParams(window.location.search).get("next");
+      router.push(next || "/dashboard");
       router.refresh();
     } else {
       setNeedsVerify(true);

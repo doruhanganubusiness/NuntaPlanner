@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { api } from "@/lib/api/client";
 import type { WeddingMemberRow } from "@/lib/supabase/database.types";
-import { Trash2 } from "lucide-react";
+import { Check, Link as LinkIcon, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -32,6 +32,18 @@ export function MembersManager({
   const [permission, setPermission] = useState("viewer");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  async function copyLink(memberId: string, token: string) {
+    const url = `${window.location.origin}/invite/${token}`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      window.prompt("Copiază linkul de invitație:", url);
+    }
+    setCopiedId(memberId);
+    setTimeout(() => setCopiedId((c) => (c === memberId ? null : c)), 2000);
+  }
 
   async function invite(e: React.FormEvent) {
     e.preventDefault();
@@ -73,16 +85,35 @@ export function MembersManager({
                 {m.status === "active" ? "activ" : "în așteptare"}
               </p>
             </div>
-            {m.permission !== "owner" && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => remove(m.id)}
-                aria-label="Elimină"
-              >
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
-            )}
+            <div className="flex items-center gap-1">
+              {m.status === "pending" && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => copyLink(m.id, m.invite_token)}
+                >
+                  {copiedId === m.id ? (
+                    <>
+                      <Check className="h-4 w-4" /> Copiat
+                    </>
+                  ) : (
+                    <>
+                      <LinkIcon className="h-4 w-4" /> Copiază link
+                    </>
+                  )}
+                </Button>
+              )}
+              {m.permission !== "owner" && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => remove(m.id)}
+                  aria-label="Elimină"
+                >
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              )}
+            </div>
           </li>
         ))}
       </ul>
