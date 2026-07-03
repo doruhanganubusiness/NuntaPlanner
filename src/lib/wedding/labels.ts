@@ -5,12 +5,10 @@ export function musicLabel(rec: MusicRecommendation): string {
   switch (rec) {
     case "dj":
       return "DJ";
+    case "band":
+      return "Formație";
     case "band_and_dj":
       return "Formație + DJ";
-    case "band":
-      return "Formație completă";
-    case "dj_budget_limited":
-      return "DJ (buget limitat)";
   }
 }
 

@@ -6,11 +6,18 @@ import type {
 } from "./types";
 import { num, round } from "./util";
 
+const LABELS: Record<MusicRecommendation, string> = {
+  dj: "DJ",
+  band: "Formație",
+  band_and_dj: "Formație + DJ",
+};
+
 /**
- * Formație vs DJ (secțiunea 5.5).
- * Decizia se bazează pe numărul de invitați la petrecere și pe bugetul de muzică
- * (dacă bugetul total e completat). Fără buget total, recomandarea se face doar
- * pe numărul de invitați și se marchează în `reason`.
+ * Recomandarea de muzică (secțiunea 5.5) — pe mărimea nunții:
+ *   ≤ prag_jos            → DJ
+ *   prag_jos .. prag_sus  → Formație
+ *   > prag_sus            → Formație + DJ
+ * Mirii pot suprascrie prin `music_choice`; bugetul se ajustează în consecință.
  * Returnează null dacă nu există slot de petrecere.
  */
 export function computeMusic(
@@ -27,52 +34,36 @@ export function computeMusic(
     0,
   );
 
+  const { bandGuestThresholdLow: low, bandGuestThresholdHigh: high } = cfg;
+
+  let recommendation: MusicRecommendation;
+  if (guests <= low) recommendation = "dj";
+  else if (guests <= high) recommendation = "band";
+  else recommendation = "band_and_dj";
+
+  const overridden =
+    input.music_choice != null && input.music_choice !== recommendation;
+  const selected = input.music_choice ?? recommendation;
+
   const hasBudget = input.total_budget != null && input.total_budget > 0;
   const musicBudget = hasBudget
     ? round(num(input.total_budget) * cfg.musicBudgetPct, 2)
     : null;
 
-  const { bandCostRON: band, djCostRON: dj } = cfg;
-  const { bandGuestThresholdLow: low, bandGuestThresholdHigh: high } = cfg;
-
-  let recommendation: MusicRecommendation;
-  let reason: string;
-
-  if (musicBudget == null) {
-    // Fără buget: decidem pe număr de invitați.
-    if (guests < low) {
-      recommendation = "dj";
-      reason = `Sub ${low} invitați — un DJ este suficient (buget total necompletat).`;
-    } else if (guests <= high) {
-      recommendation = "band_and_dj";
-      reason = `${low}–${high} invitați — recomandăm Formație + DJ (buget total necompletat, verifică fezabilitatea).`;
-    } else {
-      recommendation = "band";
-      reason = `Peste ${high} invitați — recomandăm Formație completă (buget total necompletat, verifică fezabilitatea).`;
-    }
-  } else if (guests < low || musicBudget < dj) {
-    recommendation = "dj";
-    reason =
-      guests < low
-        ? `Sub ${low} invitați — un DJ este suficient.`
-        : `Bugetul de muzică (${musicBudget} RON) e sub costul estimat al unui DJ (${dj} RON).`;
-  } else if (guests <= high && musicBudget >= band) {
-    recommendation = "band_and_dj";
-    reason = `${low}–${high} invitați și buget de muzică suficient (${musicBudget} ≥ ${band} RON) — Formație + DJ.`;
-  } else if (guests > high && musicBudget >= band) {
-    recommendation = "band";
-    reason = `Peste ${high} invitați și buget de muzică suficient (${musicBudget} ≥ ${band} RON) — Formație completă.`;
-  } else {
-    recommendation = "dj_budget_limited";
-    reason = `Bugetul de muzică (${musicBudget} RON) e insuficient pentru o formație (${band} RON) — recomandăm DJ.`;
-  }
+  const reason = overridden
+    ? `Ai ales ${LABELS[selected]} (noi recomandam ${LABELS[recommendation]} pentru ${guests} invitați).`
+    : guests <= low
+      ? `Până în ${low} invitați — un DJ este suficient.`
+      : guests <= high
+        ? `Între ${low} și ${high} invitați — recomandăm o formație live.`
+        : `Peste ${high} invitați — recomandăm formație + DJ pentru energie toată noaptea.`;
 
   return {
     guests,
-    musicBudgetRON: musicBudget,
-    bandCostRON: band,
-    djCostRON: dj,
     recommendation,
+    selected,
+    overridden,
+    musicBudgetRON: musicBudget,
     reason,
   };
 }

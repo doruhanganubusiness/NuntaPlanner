@@ -7,8 +7,11 @@ import type {
   WeddingInput,
 } from "../types";
 
-const djMusic = { recommendation: "dj" } as MusicResult;
-const bandMusic = { recommendation: "band_and_dj" } as MusicResult;
+const djMusic = { recommendation: "dj", selected: "dj" } as MusicResult;
+const bandMusic = {
+  recommendation: "band_and_dj",
+  selected: "band_and_dj",
+} as MusicResult;
 
 const pctOf = (
   res: ReturnType<typeof computeBudget>,

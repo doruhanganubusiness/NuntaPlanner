@@ -16,6 +16,9 @@ export type SlotType =
 /** Modul de tratare a băuturii ales de miri (weddings.drink_mode). */
 export type DrinkMode = "quantities" | "cost";
 
+/** Opțiunea de muzică (recomandare sau alegerea manuală a mirilor). */
+export type MusicChoice = "dj" | "band" | "band_and_dj";
+
 /** Categoriile de buget pentru alocare (secțiunea 5.6). */
 export type BudgetCategoryKey =
   | "venue_catering"
@@ -56,6 +59,8 @@ export interface WeddingInput {
    * Ajustează procentele implicite din alocarea bugetului.
    */
   budget_priorities?: BudgetCategoryKey[] | null;
+  /** Alegerea manuală a mirilor pentru muzică (suprascrie recomandarea). */
+  music_choice?: MusicChoice | null;
   slots?: SlotInput[];
 }
 
@@ -110,6 +115,7 @@ export interface EngineConfig {
   // Profil implicit (DJ) și profil cu formație live (muzica are pondere mai mare).
   budgetAllocation: Record<BudgetCategoryKey, number>;
   budgetAllocationBand: Record<BudgetCategoryKey, number>;
+  budgetAllocationBandDj: Record<BudgetCategoryKey, number>;
 
   // --- buget recomandat ---
   cateringTypicalPerPersonRON: number; // cost tipic/persoană catering (regional)
@@ -185,18 +191,17 @@ export interface VenueResult {
   roundTables: number;
 }
 
-export type MusicRecommendation =
-  | "dj"
-  | "band_and_dj"
-  | "band"
-  | "dj_budget_limited";
+export type MusicRecommendation = MusicChoice;
 
 export interface MusicResult {
   guests: number;
-  musicBudgetRON: number | null;
-  bandCostRON: number;
-  djCostRON: number;
+  /** Ce recomandă platforma în funcție de mărimea nunții. */
   recommendation: MusicRecommendation;
+  /** Alegerea efectivă (override-ul mirilor dacă există, altfel recomandarea). */
+  selected: MusicRecommendation;
+  /** True dacă mirii au suprascris recomandarea. */
+  overridden: boolean;
+  musicBudgetRON: number | null;
   reason: string;
 }
 

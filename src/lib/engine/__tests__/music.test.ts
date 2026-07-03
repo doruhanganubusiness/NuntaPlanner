@@ -7,55 +7,27 @@ const reception = (guests: number): WeddingInput["slots"] => [
   { slot_type: "reception", guests_adults: guests },
 ];
 
-describe("computeMusic (5.5)", () => {
-  it("sub 80 invitați → DJ", () => {
-    const res = computeMusic(
-      { total_budget: 200000, slots: reception(60) },
-      DEFAULT_CONFIG,
-    );
-    expect(res!.recommendation).toBe("dj");
+describe("computeMusic — recomandare pe mărime (5.5)", () => {
+  it("până în 100 invitați → DJ", () => {
+    expect(computeMusic({ slots: reception(80) }, DEFAULT_CONFIG)!.recommendation).toBe("dj");
+    expect(computeMusic({ slots: reception(100) }, DEFAULT_CONFIG)!.recommendation).toBe("dj");
   });
 
-  it("80–200 invitați cu buget suficient → Formație + DJ", () => {
-    // musicBudget = 200000 × 0.09 = 18000 ≥ 12000 (band)
-    const res = computeMusic(
-      { total_budget: 200000, slots: reception(120) },
-      DEFAULT_CONFIG,
-    );
-    expect(res!.musicBudgetRON).toBe(18000);
-    expect(res!.recommendation).toBe("band_and_dj");
+  it("101–300 invitați → Formație", () => {
+    expect(computeMusic({ slots: reception(101) }, DEFAULT_CONFIG)!.recommendation).toBe("band");
+    expect(computeMusic({ slots: reception(250) }, DEFAULT_CONFIG)!.recommendation).toBe("band");
   });
 
-  it("peste 200 invitați cu buget suficient → Formație", () => {
+  it("peste 300 invitați → Formație + DJ", () => {
+    expect(computeMusic({ slots: reception(350) }, DEFAULT_CONFIG)!.recommendation).toBe("band_and_dj");
+  });
+
+  it("nu mai depinde de buget (150 invitați, buget mic) → tot Formație", () => {
     const res = computeMusic(
-      { total_budget: 300000, slots: reception(250) },
+      { total_budget: 10000, slots: reception(150) },
       DEFAULT_CONFIG,
     );
     expect(res!.recommendation).toBe("band");
-  });
-
-  it("buget insuficient pentru formație → DJ (buget limitat)", () => {
-    // musicBudget = 100000 × 0.09 = 9000 < 12000 (band), dar ≥ dj (4000)
-    const res = computeMusic(
-      { total_budget: 100000, slots: reception(120) },
-      DEFAULT_CONFIG,
-    );
-    expect(res!.recommendation).toBe("dj_budget_limited");
-  });
-
-  it("buget sub costul DJ → DJ", () => {
-    // musicBudget = 40000 × 0.09 = 3600 < 4000 (dj)
-    const res = computeMusic(
-      { total_budget: 40000, slots: reception(120) },
-      DEFAULT_CONFIG,
-    );
-    expect(res!.recommendation).toBe("dj");
-  });
-
-  it("fără buget total → decizie pe număr de invitați", () => {
-    const res = computeMusic({ slots: reception(120) }, DEFAULT_CONFIG);
-    expect(res!.musicBudgetRON).toBeNull();
-    expect(res!.recommendation).toBe("band_and_dj");
   });
 
   it("returnează null fără slot de petrecere", () => {
@@ -65,5 +37,26 @@ describe("computeMusic (5.5)", () => {
         DEFAULT_CONFIG,
       ),
     ).toBeNull();
+  });
+});
+
+describe("computeMusic — override manual", () => {
+  it("alegerea mirilor suprascrie recomandarea", () => {
+    const res = computeMusic(
+      { slots: reception(150), music_choice: "dj" },
+      DEFAULT_CONFIG,
+    );
+    expect(res!.recommendation).toBe("band");
+    expect(res!.selected).toBe("dj");
+    expect(res!.overridden).toBe(true);
+  });
+
+  it("dacă alegerea coincide cu recomandarea, nu e considerat override", () => {
+    const res = computeMusic(
+      { slots: reception(150), music_choice: "band" },
+      DEFAULT_CONFIG,
+    );
+    expect(res!.selected).toBe("band");
+    expect(res!.overridden).toBe(false);
   });
 });

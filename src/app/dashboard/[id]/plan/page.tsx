@@ -1,3 +1,4 @@
+import { MusicChoiceSelect } from "@/components/dashboard/music-choice-select";
 import { PlanActions } from "@/components/dashboard/plan-actions";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -138,10 +139,20 @@ export default async function PlanPage({
             )}
             {r.music && (
               <div className="mt-3">
-                <Badge>{musicLabel(r.music.recommendation)}</Badge>
+                <Badge>{musicLabel(r.music.selected)}</Badge>
+                {r.music.overridden && (
+                  <Badge tone="muted" className="ml-2">
+                    recomandat: {musicLabel(r.music.recommendation)}
+                  </Badge>
+                )}
                 <p className="mt-2 text-sm text-muted-foreground">
                   {r.music.reason}
                 </p>
+                <MusicChoiceSelect
+                  weddingId={id}
+                  current={r.music.overridden ? r.music.selected : null}
+                  recommendation={r.music.recommendation}
+                />
               </div>
             )}
           </CardContent>

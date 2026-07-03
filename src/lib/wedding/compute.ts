@@ -23,6 +23,7 @@ export function toWeddingInput(
     drink_mode: wedding.drink_mode,
     budget_priorities:
       (wedding.budget_priorities as BudgetCategoryKey[] | null) ?? null,
+    music_choice: wedding.music_choice,
     slots: slots.map((s) => ({
       id: s.id,
       slot_type: s.slot_type,

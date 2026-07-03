@@ -12,8 +12,13 @@ import { ceil, num, round } from "./util";
 /** Cât de mult influențează prioritizarea drag&drop procentele (0..1). */
 const PRIORITY_STRENGTH = 0.15;
 
-const isBand = (music: MusicResult | null) =>
-  music?.recommendation === "band" || music?.recommendation === "band_and_dj";
+/** Profilul de alocare în funcție de alegerea efectivă de muzică. */
+function profileFor(cfg: EngineConfig, music: MusicResult | null) {
+  const sel = music?.selected ?? "dj";
+  if (sel === "band_and_dj") return cfg.budgetAllocationBandDj;
+  if (sel === "band") return cfg.budgetAllocationBand;
+  return cfg.budgetAllocation;
+}
 
 function receptionGuests(input: WeddingInput): number {
   return (input.slots ?? [])
@@ -35,9 +40,7 @@ function recommendedTotal(
   const guests = receptionGuests(input);
   if (guests <= 0) return null;
   const cateringCost = guests * cfg.cateringTypicalPerPersonRON;
-  const profile = isBand(music)
-    ? cfg.budgetAllocationBand
-    : cfg.budgetAllocation;
+  const profile = profileFor(cfg, music);
   const raw = cateringCost / profile.venue_catering;
   // rotunjire în sus la 1.000 RON
   return Math.ceil(raw / 1000) * 1000;
@@ -66,9 +69,7 @@ export function computeBudget(
   const usingRecommended = userTotal == null && recommended != null;
 
   const mode = input.drink_mode ?? "quantities";
-  const profile = isBand(music)
-    ? cfg.budgetAllocationBand
-    : cfg.budgetAllocation;
+  const profile = profileFor(cfg, music);
 
   const keys = (Object.keys(profile) as BudgetCategoryKey[]).filter(
     (k) => !(k === "drinks" && mode !== "cost"),

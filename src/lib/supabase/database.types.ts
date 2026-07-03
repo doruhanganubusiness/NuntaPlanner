@@ -24,6 +24,7 @@ export type WeddingStyle =
   | "garden"
   | "traditional";
 export type DrinkModeDb = "quantities" | "cost";
+export type MusicChoiceDb = "dj" | "band" | "band_and_dj";
 export type MemberRole = "groom" | "bride" | "parent" | "godparent" | "viewer";
 export type MemberPermission = "owner" | "editor" | "viewer";
 export type MemberStatus = "pending" | "active";
@@ -59,6 +60,7 @@ export type WeddingRow = {
   currency: string;
   drink_mode: DrinkModeDb;
   budget_priorities: Json | null;
+  music_choice: MusicChoiceDb | null;
   created_at: string;
   updated_at: string;
 };

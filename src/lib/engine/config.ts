@@ -52,12 +52,12 @@ export const DEFAULT_CONFIG: EngineConfig = {
   venueSqmMax: 2.0,
   guestsPerTable: 10,
 
-  // muzică (5.5)
+  // muzică (5.5) — praguri pe mărimea nunții
   musicBudgetPct: 0.09,
   bandCostRON: 12000,
   djCostRON: 4000,
-  bandGuestThresholdLow: 80,
-  bandGuestThresholdHigh: 200,
+  bandGuestThresholdLow: 100, // peste → Formație
+  bandGuestThresholdHigh: 300, // peste → Formație + DJ
 
   // alocare buget (5.6) — sumă = 1.00 (băutura inclusă doar dacă mod `cost`)
   // Profil implicit (DJ): locația > 51%, ținute ≥ 8%, muzică 6%.
@@ -79,6 +79,17 @@ export const DEFAULT_CONFIG: EngineConfig = {
     decor_flowers: 0.07,
     attire: 0.08,
     drinks: 0.05,
+    invitations_favors_cake: 0.04,
+    misc: 0.03,
+  },
+  // Profil formație + DJ: muzica cea mai mare (~13%), locația rămâne > 51%.
+  budgetAllocationBandDj: {
+    venue_catering: 0.52,
+    music: 0.13,
+    photo_video: 0.09,
+    decor_flowers: 0.07,
+    attire: 0.08,
+    drinks: 0.04,
     invitations_favors_cake: 0.04,
     misc: 0.03,
   },

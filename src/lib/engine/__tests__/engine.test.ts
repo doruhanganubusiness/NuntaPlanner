@@ -53,7 +53,8 @@ describe("computeWedding — integrare", () => {
 
   it("muzica ține cont de buget și invitați", () => {
     expect(res.music!.guests).toBe(150);
-    expect(res.music!.recommendation).toBe("band_and_dj");
+    // 150 invitați → între 100 și 300 → Formație
+    expect(res.music!.recommendation).toBe("band");
   });
 
   it("dulciurile acoperă și ceremoniile, și petrecerea", () => {
@@ -73,10 +74,22 @@ describe("computeWedding — integrare", () => {
     expect(other.inputHash).not.toBe(res.inputHash);
   });
 
-  it("respectă overrides de config (cost DJ regional)", () => {
-    const res2 = computeWedding(wedding, { djCostRON: 999999 });
-    // musicBudget = 18000 < 999999 → DJ
+  it("respectă overrides de config (praguri de invitați)", () => {
+    // ridicăm pragul → 150 invitați devin „DJ"
+    const res2 = computeWedding(wedding, { bandGuestThresholdLow: 200 });
     expect(res2.music!.recommendation).toBe("dj");
+  });
+
+  it("mirii pot suprascrie muzica, iar bugetul se schimbă", () => {
+    const rec = computeWedding(wedding); // 150 → band
+    const overridden = computeWedding({ ...wedding, music_choice: "dj" });
+    expect(overridden.music!.selected).toBe("dj");
+    const musicRec = rec.budget!.allocations.find((a) => a.key === "music")!.pct;
+    const musicDj = overridden.budget!.allocations.find(
+      (a) => a.key === "music",
+    )!.pct;
+    // DJ are pondere de muzică mai mică decât formația
+    expect(musicDj).toBeLessThan(musicRec);
   });
 });
 

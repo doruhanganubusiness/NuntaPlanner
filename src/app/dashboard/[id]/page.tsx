@@ -156,7 +156,7 @@ export default async function OverviewPage({
               {results.music && (
                 <Row
                   label="Muzică"
-                  value={musicLabel(results.music.recommendation)}
+                  value={musicLabel(results.music.selected)}
                 />
               )}
               {results.venue && (

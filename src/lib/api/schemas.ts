@@ -61,6 +61,7 @@ export const updateWeddingSchema = z
     currency: z.string(),
     drink_mode: drinkMode,
     budget_priorities: z.array(budgetCategory).nullable(),
+    music_choice: z.enum(["dj", "band", "band_and_dj"]).nullable(),
   })
   .partial();
 
