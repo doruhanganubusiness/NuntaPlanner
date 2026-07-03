@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { api } from "@/lib/api/client";
 import type { EventSlotRow, SlotTypeDb } from "@/lib/supabase/database.types";
-import { SLOT_TYPE_OPTIONS } from "@/lib/wedding/labels";
+import { SLOT_TYPE_OPTIONS, slotDefaults } from "@/lib/wedding/labels";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -135,9 +135,18 @@ function SlotCard({
               <Label>Tip slot</Label>
               <Select
                 value={slot.slot_type}
-                onChange={(e) =>
-                  onLocalChange({ slot_type: e.target.value as SlotTypeDb })
-                }
+                onChange={(e) => {
+                  const t = e.target.value as SlotTypeDb;
+                  const d = slotDefaults(t);
+                  // Titlul + alcool/masă/durată se ajustează automat după tip.
+                  onLocalChange({
+                    slot_type: t,
+                    title: d.title,
+                    serves_alcohol: d.serves_alcohol,
+                    serves_full_meal: d.serves_full_meal,
+                    duration_minutes: d.duration_minutes,
+                  });
+                }}
               >
                 {SLOT_TYPE_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>
