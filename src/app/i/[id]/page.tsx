@@ -8,7 +8,7 @@ import {
   formatLongDate,
 } from "@/lib/wedding/invitation";
 import { slotTypeLabel } from "@/lib/wedding/labels";
-import { Heart } from "lucide-react";
+import { Heart, MapPin } from "lucide-react";
 import type { Metadata } from "next";
 
 async function getWedding(id: string) {
@@ -55,6 +55,13 @@ function Ornament() {
 function SlotBlock({ slot }: { slot: EventSlotRow }) {
   const title = slot.title || slotTypeLabel(slot.slot_type);
   const time = slot.slot_time ? slot.slot_time.slice(0, 5) : null;
+  const mapsQuery = [slot.location_name, slot.location_address]
+    .filter(Boolean)
+    .join(", ");
+  const mapsUrl = mapsQuery
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`
+    : null;
+
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--accent)]/50 px-5 py-4">
       <p className="text-2xl text-[var(--primary)]" style={script}>
@@ -62,11 +69,21 @@ function SlotBlock({ slot }: { slot: EventSlotRow }) {
       </p>
       {time && <p className="mt-1 text-lg">ora {time}</p>}
       {slot.location_name && <p className="text-base">{slot.location_name}</p>}
-      {slot.location_address && (
-        <p className="text-sm text-[var(--muted-foreground)]">
-          {slot.location_address}
-        </p>
-      )}
+      {slot.location_address &&
+        (mapsUrl ? (
+          <a
+            href={mapsUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-0.5 inline-flex items-center gap-1 text-sm text-[var(--primary)] hover:underline"
+          >
+            <MapPin className="h-3.5 w-3.5" /> {slot.location_address}
+          </a>
+        ) : (
+          <p className="text-sm text-[var(--muted-foreground)]">
+            {slot.location_address}
+          </p>
+        ))}
     </div>
   );
 }
