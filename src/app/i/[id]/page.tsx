@@ -8,7 +8,7 @@ import {
   formatLongDate,
 } from "@/lib/wedding/invitation";
 import { slotTypeLabel } from "@/lib/wedding/labels";
-import { Heart, MapPin } from "lucide-react";
+import { Heart, MapPin, Navigation } from "lucide-react";
 import type { Metadata } from "next";
 
 async function getWedding(id: string) {
@@ -58,9 +58,9 @@ function SlotBlock({ slot }: { slot: EventSlotRow }) {
   const mapsQuery = [slot.location_name, slot.location_address]
     .filter(Boolean)
     .join(", ");
-  const mapsUrl = mapsQuery
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`
-    : null;
+  const q = encodeURIComponent(mapsQuery);
+  const googleUrl = `https://www.google.com/maps/search/?api=1&query=${q}`;
+  const wazeUrl = `https://waze.com/ul?q=${q}&navigate=yes`;
 
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--accent)]/50 px-5 py-4">
@@ -69,21 +69,31 @@ function SlotBlock({ slot }: { slot: EventSlotRow }) {
       </p>
       {time && <p className="mt-1 text-lg">ora {time}</p>}
       {slot.location_name && <p className="text-base">{slot.location_name}</p>}
-      {slot.location_address &&
-        (mapsUrl ? (
+      {slot.location_address && (
+        <p className="text-sm text-[var(--muted-foreground)]">
+          {slot.location_address}
+        </p>
+      )}
+      {mapsQuery && (
+        <div className="mt-2 flex flex-wrap gap-4">
           <a
-            href={mapsUrl}
+            href={googleUrl}
             target="_blank"
             rel="noreferrer"
-            className="mt-0.5 inline-flex items-center gap-1 text-sm text-[var(--primary)] hover:underline"
+            className="inline-flex items-center gap-1 text-sm text-[var(--primary)] hover:underline"
           >
-            <MapPin className="h-3.5 w-3.5" /> {slot.location_address}
+            <MapPin className="h-3.5 w-3.5" /> Google Maps
           </a>
-        ) : (
-          <p className="text-sm text-[var(--muted-foreground)]">
-            {slot.location_address}
-          </p>
-        ))}
+          <a
+            href={wazeUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-sm text-[var(--primary)] hover:underline"
+          >
+            <Navigation className="h-3.5 w-3.5" /> Waze
+          </a>
+        </div>
+      )}
     </div>
   );
 }
