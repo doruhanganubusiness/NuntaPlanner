@@ -1,0 +1,4 @@
+# Config Supabase CLI pentru NuntaPlanner.
+# Leagă repo-ul de proiectul remote: `supabase link --project-ref iwakrrugfdtslficmori`
+# apoi aplică migrațiile: `supabase db push`.
+project_id = "iwakrrugfdtslficmori"

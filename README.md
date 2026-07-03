@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NuntaPlanner
 
-## Getting Started
+Platformă de planificare a nunții pentru miri. Motorul de calcul generează automat
+recomandări concrete: cantități de băutură, dulciuri/tort, dimensiunea sălii,
+formație vs DJ și defalcarea bugetului pe categorii.
 
-First, run the development server:
+**Faza 1 (actuală):** planner pentru miri. **Faza furnizori** (lead-uri, plăți, chat)
+e proiectată în schemă dar neimplementată încă — vezi `docs/`.
+
+## Stack
+
+- **Next.js 16** (App Router) + TypeScript + Tailwind CSS v4
+- **Supabase** (Postgres + Auth, JWT prin cookies SSR)
+- **Motor de calcul** — modul TypeScript pur, testat cu Vitest, refolosibil web + mobil
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # completează cheile Supabase
+
+# aplică schema pe Supabase (o singură dată)
+supabase link --project-ref iwakrrugfdtslficmori
+supabase db push
+
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Comenzi
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Comandă | Descriere |
+|---|---|
+| `npm run dev` | Server de dezvoltare |
+| `npm run build` | Build de producție |
+| `npm test` | Testele motorului de calcul (Vitest) |
+| `npm run lint` | ESLint |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Structura
 
-## Learn More
+```
+src/
+  lib/engine/        Motorul de calcul (pur, testat) — secțiunea 5 din spec
+  lib/supabase/      Clienți Supabase (server/browser/admin) + tipuri Database
+  lib/wedding/       Punte DB → motor, cache calcule
+  lib/api/           Helper-e HTTP, scheme Zod, client fetch
+  app/api/v1/        API REST v1 (auth, weddings, members, slots, calculations)
+  app/dashboard/     Dashboard-ul mirilor (overview, detalii, sloturi, buget, plan, membri)
+  components/        Primitive UI + componente dashboard
+supabase/migrations/ Schema Faza 1 (SQL versionat)
+docs/                Specificația tehnică v1.2
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Motorul de calcul
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Inima produsului. `computeWedding(input, configOverride?)` din `src/lib/engine`
+este pur și determinist — zero dependențe de DB — deci se refolosește identic în
+API-ul web și în aplicația mobilă (Faza 2). Toate constantele trăiesc în config
+(`config_parameters` în DB), nu hardcodate.
