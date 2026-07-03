@@ -130,6 +130,8 @@ export type RsvpRow = {
   guest_name: string;
   attending: boolean;
   guests_count: number;
+  adults_count: number;
+  children_count: number;
   message: string | null;
   created_at: string;
 };

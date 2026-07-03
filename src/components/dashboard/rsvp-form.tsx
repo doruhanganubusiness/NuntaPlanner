@@ -11,7 +11,8 @@ import { useState } from "react";
 export function RsvpForm({ weddingId }: { weddingId: string }) {
   const [name, setName] = useState("");
   const [attending, setAttending] = useState(true);
-  const [count, setCount] = useState(1);
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +25,8 @@ export function RsvpForm({ weddingId }: { weddingId: string }) {
       await api.post(`/invitations/${weddingId}/rsvp`, {
         guest_name: name,
         attending,
-        guests_count: attending ? count : 0,
+        adults_count: attending ? adults : 0,
+        children_count: attending ? children : 0,
         message: message || null,
       });
       setStatus("done");
@@ -90,17 +92,31 @@ export function RsvpForm({ weddingId }: { weddingId: string }) {
         </div>
 
         {attending && (
-          <div>
-            <label className="mb-1 block text-sm text-[var(--muted-foreground)]">
-              Câte persoane veniți (inclusiv tu)?
-            </label>
-            <Input
-              type="number"
-              min={1}
-              max={50}
-              value={count}
-              onChange={(e) => setCount(Number(e.target.value))}
-            />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-1 block text-sm text-[var(--muted-foreground)]">
+                Adulți (inclusiv tu)
+              </label>
+              <Input
+                type="number"
+                min={1}
+                max={50}
+                value={adults}
+                onChange={(e) => setAdults(Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm text-[var(--muted-foreground)]">
+                Copii
+              </label>
+              <Input
+                type="number"
+                min={0}
+                max={50}
+                value={children}
+                onChange={(e) => setChildren(Number(e.target.value))}
+              />
+            </div>
           </div>
         )}
 

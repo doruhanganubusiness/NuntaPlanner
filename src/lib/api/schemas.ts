@@ -119,6 +119,7 @@ export const updateSlotSchema = createSlotSchema.partial();
 export const rsvpSchema = z.object({
   guest_name: z.string().min(1).max(120),
   attending: z.boolean().default(true),
-  guests_count: z.number().int().min(0).max(50).default(1),
+  adults_count: z.number().int().min(0).max(50).default(1),
+  children_count: z.number().int().min(0).max(50).default(0),
   message: z.string().max(1000).nullable().optional(),
 });

@@ -11,7 +11,8 @@ export function RsvpList({ initial }: { initial: RsvpRow[] }) {
 
   const confirmed = rsvps.filter((r) => r.attending);
   const declined = rsvps.filter((r) => !r.attending);
-  const people = confirmed.reduce((s, r) => s + r.guests_count, 0);
+  const adults = confirmed.reduce((s, r) => s + r.adults_count, 0);
+  const children = confirmed.reduce((s, r) => s + r.children_count, 0);
 
   async function remove(id: string) {
     await createClient().from("rsvps").delete().eq("id", id);
@@ -30,7 +31,8 @@ export function RsvpList({ initial }: { initial: RsvpRow[] }) {
     <div className="space-y-4">
       <div className="flex flex-wrap gap-4 text-sm">
         <span className="rounded-md bg-success/15 px-3 py-1 text-success">
-          {confirmed.length} confirmări · {people} persoane
+          {confirmed.length} confirmări · {adults + children} persoane (
+          {adults} adulți, {children} copii)
         </span>
         {declined.length > 0 && (
           <span className="rounded-md bg-muted px-3 py-1 text-muted-foreground">
@@ -47,7 +49,8 @@ export function RsvpList({ initial }: { initial: RsvpRow[] }) {
                 {r.guest_name}{" "}
                 {r.attending ? (
                   <span className="text-success">
-                    · {r.guests_count} pers.
+                    · {r.adults_count} adulți
+                    {r.children_count > 0 && `, ${r.children_count} copii`}
                   </span>
                 ) : (
                   <span className="text-muted-foreground">· nu poate</span>

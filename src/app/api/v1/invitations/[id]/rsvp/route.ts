@@ -24,13 +24,16 @@ export async function POST(req: Request, { params }: Ctx) {
     return fail("Invitația nu este disponibilă", 404);
   }
 
-  const { attending, guests_count } = parsed.data;
+  const { attending } = parsed.data;
+  const adults = attending ? parsed.data.adults_count : 0;
+  const children = attending ? parsed.data.children_count : 0;
   const { error } = await admin.from("rsvps").insert({
     wedding_id: id,
     guest_name: parsed.data.guest_name,
     attending,
-    // Dacă nu vine, contorul e irelevant → 0.
-    guests_count: attending ? guests_count : 0,
+    adults_count: adults,
+    children_count: children,
+    guests_count: adults + children,
     message: parsed.data.message ?? null,
   });
   if (error) return fail(error.message, 400);
