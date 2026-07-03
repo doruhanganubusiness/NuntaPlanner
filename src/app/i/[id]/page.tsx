@@ -1,4 +1,3 @@
-import { InvitationShare } from "@/components/dashboard/invitation-share";
 import { RsvpForm } from "@/components/dashboard/rsvp-form";
 import { scriptFont, serifFont } from "@/lib/fonts";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -7,7 +6,6 @@ import {
   DEFAULT_INVITATION_MESSAGE,
   defaultCouple,
   formatLongDate,
-  formatTime,
 } from "@/lib/wedding/invitation";
 import { slotTypeLabel } from "@/lib/wedding/labels";
 import { Heart } from "lucide-react";
@@ -56,7 +54,7 @@ function Ornament() {
 
 function SlotBlock({ slot }: { slot: EventSlotRow }) {
   const title = slot.title || slotTypeLabel(slot.slot_type);
-  const time = formatTime(slot.start_time);
+  const time = slot.slot_time ? slot.slot_time.slice(0, 5) : null;
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--accent)]/50 px-5 py-4">
       <p className="text-2xl text-[var(--primary)]" style={script}>
@@ -106,9 +104,6 @@ export default async function InvitationPage({
   const couple = wedding.invitation_couple || defaultCouple(wedding.name);
   const message = wedding.invitation_message || DEFAULT_INVITATION_MESSAGE;
   const dateStr = formatLongDate(wedding.wedding_date);
-  const place = wedding.locality
-    ? `${wedding.locality}, ${wedding.county}`
-    : (wedding.county ?? null);
 
   return (
     <main
@@ -131,9 +126,6 @@ export default async function InvitationPage({
             {couple}
           </h1>
           {dateStr && <p className="mt-5 text-2xl">{dateStr}</p>}
-          {place && (
-            <p className="text-lg text-[var(--muted-foreground)]">{place}</p>
-          )}
 
           <Ornament />
 
@@ -157,10 +149,6 @@ export default async function InvitationPage({
           <p className="text-4xl text-[var(--primary)]" style={script}>
             Vă așteptăm cu drag!
           </p>
-
-          <div className="mt-8 flex justify-center print:hidden">
-            <InvitationShare couple={couple} dateStr={dateStr} />
-          </div>
         </div>
 
         <div className="mt-6 print:hidden">

@@ -87,6 +87,7 @@ export type EventSlotRow = {
   slot_type: SlotTypeDb;
   title: string | null;
   start_time: string | null;
+  slot_time: string | null;
   duration_minutes: number | null;
   location_name: string | null;
   location_address: string | null;

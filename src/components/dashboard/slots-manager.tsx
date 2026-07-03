@@ -110,6 +110,7 @@ function SlotCard({
       await api.patch(`/weddings/${weddingId}/slots/${slot.id}`, {
         slot_type: slot.slot_type,
         title: slot.title ?? null,
+        slot_time: slot.slot_time ? slot.slot_time.slice(0, 5) : null,
         duration_minutes: slot.duration_minutes,
         location_name: slot.location_name ?? null,
         guests_adults: slot.guests_adults,
@@ -173,7 +174,17 @@ function SlotCard({
           </Button>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-4">
+          <div>
+            <Label>Ora</Label>
+            <Input
+              type="time"
+              value={slot.slot_time ? slot.slot_time.slice(0, 5) : ""}
+              onChange={(e) =>
+                onLocalChange({ slot_time: e.target.value || null })
+              }
+            />
+          </div>
           <div>
             <Label>Adulți</Label>
             <Input

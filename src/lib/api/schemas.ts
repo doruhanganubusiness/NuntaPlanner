@@ -98,6 +98,11 @@ export const createSlotSchema = z.object({
   slot_type: slotType,
   title: z.string().optional(),
   start_time: z.string().nullable().optional(),
+  slot_time: z
+    .string()
+    .regex(/^\d{2}:\d{2}(:\d{2})?$/)
+    .nullable()
+    .optional(),
   duration_minutes: z.number().int().nonnegative().nullable().optional(),
   location_name: z.string().nullable().optional(),
   location_address: z.string().nullable().optional(),

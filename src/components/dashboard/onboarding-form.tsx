@@ -42,6 +42,7 @@ type SlotDraft = {
   key: string;
   slot_type: SlotTypeDb;
   title: string;
+  slot_time: string | null;
   guests_adults: number;
   guests_children: number;
   duration_hours: number | null;
@@ -57,6 +58,7 @@ function newSlot(type: SlotTypeDb): SlotDraft {
     key: `s${counter++}`,
     slot_type: type,
     title: d.title,
+    slot_time: null,
     guests_adults: 0,
     guests_children: 0,
     duration_hours: d.duration_minutes != null ? d.duration_minutes / 60 : null,
@@ -147,6 +149,7 @@ export function OnboardingForm() {
         await api.post(`/weddings/${wedding.id}/slots`, {
           slot_type: s.slot_type,
           title: s.title,
+          slot_time: s.slot_time || null,
           guests_adults: s.guests_adults,
           guests_children: s.guests_children,
           duration_minutes:
@@ -300,7 +303,17 @@ export function OnboardingForm() {
                 )}
               </div>
 
-              <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              <div className="mt-3 grid gap-3 sm:grid-cols-4">
+                <div>
+                  <Label>Ora</Label>
+                  <Input
+                    type="time"
+                    value={s.slot_time ?? ""}
+                    onChange={(e) =>
+                      patchSlot(s.key, { slot_time: e.target.value || null })
+                    }
+                  />
+                </div>
                 <div>
                   <Label>Adulți</Label>
                   <Input
