@@ -111,8 +111,8 @@ export default async function VendorOverview() {
             sau {pricing.monthlyRON} RON/lună abonament.
           </p>
           <p className="text-muted-foreground">
-            Deblocarea plătită a contactelor (Stripe) va fi disponibilă în
-            curând. Momentan poți vedea cererile primite, cu contactul mascat.
+            Vezi cererile primite cu contactul mascat și plătești{" "}
+            {pricing.cplRON} RON per lead ca să dezvălui contactul mirelui.
           </p>
           <Button variant="outline" size="sm" asChild className="mt-1">
             <Link href="/vendor/leads">Vezi lead-urile</Link>
