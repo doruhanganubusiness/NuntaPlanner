@@ -28,7 +28,15 @@ export default function Home() {
     <main className="flex-1">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <Logo />
-        <HeaderAuthNav />
+        <div className="flex items-center gap-4">
+          <Link
+            href="/pentru-miri"
+            className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:inline"
+          >
+            Pentru miri
+          </Link>
+          <HeaderAuthNav />
+        </div>
       </header>
 
       <section className="mx-auto max-w-3xl px-6 pb-10 pt-16 text-center">
@@ -66,8 +74,11 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="mx-auto max-w-6xl px-6 py-10 text-sm text-muted-foreground">
-        © {new Date().getFullYear()} NuntaPlanner. Gratuit pentru miri.
+      <footer className="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-10 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <span>© {new Date().getFullYear()} NuntaPlanner. Gratuit pentru miri.</span>
+        <Link href="/pentru-miri" className="hover:text-foreground">
+          Pentru miri — cum funcționează
+        </Link>
       </footer>
     </main>
   );

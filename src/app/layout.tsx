@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,6 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  // Fără `template`: fiecare pagină își setează titlul complet, respectând
+  // limita de 59 de caractere fără sufix de brand adăugat automat.
   title: "NuntaPlanner — planifică-ți nunta de la zero",
   description:
     "Calculează automat cantități de băutură, dulciuri, dimensiunea sălii, muzica și bugetul nunții tale.",
