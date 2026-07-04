@@ -1,18 +1,39 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { UserRound } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { LayoutDashboard, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 /**
  * Navigația de cont din header-ul public.
- * - Desktop (≥ sm): butoanele Autentificare / Începe gratuit vizibile.
- * - Mobil (< sm): o iconiță de cont care deschide un drop-down cu aceleași opțiuni.
+ * - Neautentificat: butoanele Autentificare / Începe gratuit (drop-down pe mobil).
+ * - Autentificat: buton către Dashboard, ca utilizatorul să vadă că e logat și
+ *   să aibă o cale directă înapoi în aplicație.
+ *
+ * Starea de autentificare e citită client-side (cookie-ul de sesiune Supabase),
+ * ca paginile publice să rămână statice. Nu delogăm nimic aici.
  */
 export function HeaderAuthNav() {
   const [open, setOpen] = useState(false);
+  const [authed, setAuthed] = useState<boolean | null>(null);
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    let active = true;
+    supabase.auth.getUser().then(({ data }) => {
+      if (active) setAuthed(!!data.user);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthed(!!session?.user);
+    });
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -23,6 +44,20 @@ export function HeaderAuthNav() {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // Autentificat: o singură acțiune, vizibilă și pe mobil.
+  if (authed) {
+    return (
+      <nav className="flex items-center gap-2">
+        <Button size="sm" asChild>
+          <Link href="/dashboard">
+            <LayoutDashboard className="h-4 w-4" /> Dashboard
+          </Link>
+        </Button>
+      </nav>
+    );
+  }
+
+  // Neautentificat (și în timpul verificării inițiale): opțiunile de intrare.
   return (
     <nav className="flex items-center gap-2">
       {/* Desktop */}
