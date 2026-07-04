@@ -16,8 +16,11 @@ import {
   Share2,
 } from "lucide-react";
 
+// Titlul paginii — folosit deopotrivă ca meta title și ca H1 (vezi Hero).
+const TITLE = "Invitație digitală de nuntă cu RSVP online";
+
 export const metadata: Metadata = pageMeta({
-  title: "Invitație digitală de nuntă cu RSVP online",
+  title: TITLE,
   description:
     "Creează o invitație digitală cu link partajabil, hartă și RSVP. Confirmările invitaților ajung direct în panoul tău.",
   path: "/pentru-miri/invitatie",
@@ -38,7 +41,7 @@ const features: Feature[] = [
   {
     icon: MapPin,
     title: "Hartă către locații",
-    text: "Adresa fiecărui slot devine link clickabil către Google Maps, direct din invitație.",
+    text: "Adresa fiecărui eveniment devine link clickabil către Google Maps, direct din invitație.",
   },
   {
     icon: Navigation,
@@ -77,7 +80,7 @@ export default function InvitatiePage() {
       <Hero
         icon={MailOpen}
         eyebrow="TAB · Invitație"
-        title="Invitația digitală cu RSVP"
+        title={TITLE}
         intro="Creezi o invitație online elegantă, cu link partajabil și hartă, iar confirmările invitaților ajung direct în panoul tău."
         primary={{ href: "/register", label: "Creează-ți invitația" }}
         secondary={{ href: "/pentru-miri", label: "Vezi toate tab-urile" }}

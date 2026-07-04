@@ -1,20 +1,39 @@
 import { HeaderAuthNav } from "@/components/header-auth-nav";
 import { Logo } from "@/components/logo";
+import { MainNav } from "@/components/main-nav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { pageMeta } from "@/lib/seo";
+import type { Metadata } from "next";
 import { CalendarHeart, Calculator, ListChecks, Wine } from "lucide-react";
 import Link from "next/link";
+
+// Titlul paginii — folosit deopotrivă ca meta title și ca H1.
+const TITLE = "Planifică-ți nunta de la zero, fără bătăi de cap";
+
+export const metadata: Metadata = pageMeta({
+  title: TITLE,
+  description:
+    "Calculează automat cantitățile de băutură, dulciuri, dimensiunea sălii, muzica și bugetul nunții tale. Gratuit pentru miri.",
+  path: "/",
+  keywords: [
+    "planificare nuntă",
+    "calculator nuntă",
+    "buget nuntă",
+    "organizare nuntă",
+  ],
+});
 
 const steps = [
   {
     icon: CalendarHeart,
     title: "Creezi evenimentul",
-    text: "Adaugi tipul nunții, regiunea și sloturile zilei — civilă, religioasă, botez, petrecere.",
+    text: "Adaugi tipul nunții, regiunea și evenimentele zilei — civilă, religioasă, botez, petrecere.",
   },
   {
     icon: ListChecks,
     title: "Completezi invitații și bugetul",
-    text: "Adulți și copii per slot, buget total și prioritățile tale. Totul e opțional la început.",
+    text: "Adulți și copii per eveniment, buget total și prioritățile tale. Totul e opțional la început.",
   },
   {
     icon: Calculator,
@@ -28,13 +47,8 @@ export default function Home() {
     <main className="flex-1">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <Logo />
-        <div className="flex items-center gap-4">
-          <Link
-            href="/pentru-miri"
-            className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:inline"
-          >
-            Pentru miri
-          </Link>
+        <div className="flex items-center gap-1 sm:gap-2">
+          <MainNav />
           <HeaderAuthNav />
         </div>
       </header>
@@ -44,7 +58,7 @@ export default function Home() {
           <Wine className="h-4 w-4" /> Planificator inteligent de nunți
         </span>
         <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-5xl">
-          Planifică-ți nunta de la zero, fără bătăi de cap
+          {TITLE}
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
           Spune-ne câți invitați ai și un buget, iar noi calculăm exact de câtă

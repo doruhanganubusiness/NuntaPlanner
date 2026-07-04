@@ -60,7 +60,7 @@ export default async function BudgetPage({
             </>
           ) : (
             <p className="text-sm text-muted-foreground">
-              Adaugă un slot de petrecere cu invitați pentru a vedea alocarea.
+              Adaugă un eveniment de petrecere cu invitați pentru a vedea alocarea.
             </p>
           )}
         </CardContent>

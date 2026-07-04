@@ -16,8 +16,11 @@ import {
   Tag,
 } from "lucide-react";
 
+// Titlul paginii — folosit deopotrivă ca meta title și ca H1 (vezi Hero).
+const TITLE = "Detaliile nunții: dată, tip și stil eveniment";
+
 export const metadata: Metadata = pageMeta({
-  title: "Detaliile nunții: dată, tip și stil eveniment",
+  title: TITLE,
   description:
     "Setează numele, data fixată sau estimată, tipul — civilă, religioasă, botez — și stilul nunții. Totul se salvează automat.",
   path: "/pentru-miri/detalii",
@@ -67,7 +70,7 @@ export default function DetaliiPage() {
       <Hero
         icon={ScrollText}
         eyebrow="TAB · Detalii"
-        title="Detaliile evenimentului tău"
+        title={TITLE}
         intro="Aici stabilești identitatea nunții: nume, ce momente include, data și stilul. Sunt informațiile pe care se sprijină toate calculele."
         primary={{ href: "/register", label: "Completează detaliile" }}
         secondary={{ href: "/pentru-miri", label: "Vezi toate tab-urile" }}
@@ -83,7 +86,7 @@ export default function DetaliiPage() {
         title="Pornește planificarea de la detalii"
         text="Adaugă tipul și data nunții, iar aplicația începe imediat să-ți construiască planul."
         primary={{ href: "/register", label: "Începe gratuit" }}
-        secondary={{ href: "/pentru-miri/sloturi", label: "Următorul tab: Sloturi" }}
+        secondary={{ href: "/pentru-miri/evenimente", label: "Următorul tab: Evenimente" }}
       />
     </div>
   );

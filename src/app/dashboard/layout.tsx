@@ -1,5 +1,6 @@
 import { LogoutButton } from "@/components/dashboard/logout-button";
 import { Logo } from "@/components/logo";
+import { MainNav } from "@/components/main-nav";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -22,7 +23,10 @@ export default async function DashboardLayout({
           <Link href="/dashboard">
             <Logo />
           </Link>
-          <LogoutButton />
+          <div className="flex items-center gap-1 sm:gap-2">
+            <MainNav />
+            <LogoutButton />
+          </div>
         </div>
       </header>
       {children}

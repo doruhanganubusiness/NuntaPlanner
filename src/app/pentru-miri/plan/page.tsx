@@ -17,8 +17,11 @@ import {
   Wine,
 } from "lucide-react";
 
+// Titlul paginii — folosit deopotrivă ca meta title și ca H1 (vezi Hero).
+const TITLE = "Planul nunții: băutură, sală, muzică și dulciuri";
+
 export const metadata: Metadata = pageMeta({
-  title: "Planul nunții: băutură, sală, muzică și dulciuri",
+  title: TITLE,
   description:
     "Calcule automate pentru băutură, dimensiunea sălii, formație sau DJ, tort și dulciuri, pe baza invitaților și bugetului.",
   path: "/pentru-miri/plan",
@@ -78,8 +81,8 @@ export default function PlanPage() {
       <Hero
         icon={Calculator}
         eyebrow="TAB · Plan"
-        title="Planul generat automat al nunții"
-        intro="Aici se adună tot: pe baza sloturilor și a bugetului, aplicația calculează băutura, sala, muzica, dulciurile și defalcarea cheltuielilor."
+        title={TITLE}
+        intro="Aici se adună tot: pe baza evenimentelor și a bugetului, aplicația calculează băutura, sala, muzica, dulciurile și defalcarea cheltuielilor."
         primary={{ href: "/register", label: "Generează-ți planul" }}
         secondary={{ href: "/pentru-miri", label: "Vezi toate tab-urile" }}
       />
@@ -91,7 +94,7 @@ export default function PlanPage() {
       <BenefitList title="De ce e util planul" items={benefits} />
       <CtaBand
         title="Primește planul complet al nunții"
-        text="Adaugă sloturile și bugetul, iar planul cu toate cantitățile apare automat, gata de folosit."
+        text="Adaugă evenimentele și bugetul, iar planul cu toate cantitățile apare automat, gata de folosit."
         primary={{ href: "/register", label: "Începe gratuit" }}
         secondary={{ href: "/pentru-miri/invitatie", label: "Următorul tab: Invitație" }}
       />

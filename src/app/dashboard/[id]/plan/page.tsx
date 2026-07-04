@@ -30,7 +30,7 @@ export default async function PlanPage({
   if (!r) {
     return (
       <p className="text-sm text-muted-foreground">
-        Nu există date suficiente. Adaugă sloturi și un buget.
+        Nu există date suficiente. Adaugă evenimente și un buget.
       </p>
     );
   }

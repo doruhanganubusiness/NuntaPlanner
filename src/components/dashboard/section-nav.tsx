@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const items = [
   { seg: "", label: "Overview" },
   { seg: "details", label: "Detalii" },
-  { seg: "slots", label: "Sloturi" },
+  { seg: "slots", label: "Evenimente" },
   { seg: "budget", label: "Buget" },
   { seg: "plan", label: "Plan" },
   { seg: "invitation", label: "Invitație" },

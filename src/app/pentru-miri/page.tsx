@@ -22,10 +22,13 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+// Titlul paginii — folosit deopotrivă ca meta title și ca H1 (vezi Hero).
+const TITLE = "Aplicație de planificare a nunții pentru miri";
+
 export const metadata: Metadata = pageMeta({
-  title: "Aplicație de planificare a nunții pentru miri",
+  title: TITLE,
   description:
-    "Organizează-ți nunta într-un singur loc: buget, invitați, sloturi, plan automat și invitație digitală cu RSVP. Gratuit pentru miri.",
+    "Organizează-ți nunta într-un loc: buget, invitați, evenimente, plan automat și invitație digitală cu RSVP. Gratuit pentru miri.",
   path: "/pentru-miri",
   keywords: [
     "planificare nuntă",
@@ -53,9 +56,9 @@ const tabs: (Feature & { href: string })[] = [
   },
   {
     icon: CalendarClock,
-    title: "Sloturi",
+    title: "Evenimente",
     text: "Programul zilei pe momente: cununie, botez, petrecere, cu oră, locație și număr de invitați pentru fiecare.",
-    href: "/pentru-miri/sloturi",
+    href: "/pentru-miri/evenimente",
   },
   {
     icon: Wallet,
@@ -87,12 +90,12 @@ const steps: Feature[] = [
   {
     icon: ScrollText,
     title: "1. Creezi evenimentul",
-    text: "Adaugi tipul nunții, regiunea și sloturile zilei — civilă, religioasă, botez, petrecere. Totul e opțional la început.",
+    text: "Adaugi tipul nunții, regiunea și evenimentele zilei — civilă, religioasă, botez, petrecere. Totul e opțional la început.",
   },
   {
     icon: Users,
     title: "2. Completezi invitați și buget",
-    text: "Adulți și copii per slot, bugetul total și prioritățile tale. Datele se salvează automat pe măsură ce le introduci.",
+    text: "Adulți și copii per eveniment, bugetul total și prioritățile tale. Datele se salvează automat pe măsură ce le introduci.",
   },
   {
     icon: Calculator,
@@ -118,7 +121,7 @@ export default function PentruMiriPage() {
       <Hero
         icon={Heart}
         eyebrow="Pentru miri"
-        title="Planifică-ți nunta de la zero, fără bătăi de cap"
+        title={TITLE}
         intro="NuntaPlanner adună într-un singur loc bugetul, invitații, programul zilei și calculele — apoi îți generează automat planul complet al nunții."
         primary={{ href: "/register", label: "Creează-ți planul gratuit" }}
         secondary={{ href: "/login", label: "Am deja cont" }}

@@ -65,7 +65,7 @@ export function SlotsManager({
     <div className="space-y-4">
       {slots.length === 0 && (
         <p className="text-sm text-muted-foreground">
-          Niciun slot încă. Adaugă cununia, botezul sau petrecerea.
+          Niciun eveniment încă. Adaugă cununia, botezul sau petrecerea.
         </p>
       )}
 
@@ -81,7 +81,7 @@ export function SlotsManager({
       ))}
 
       <Button onClick={addSlot} disabled={busy} variant="outline">
-        + Adaugă slot
+        + Adaugă eveniment
       </Button>
     </div>
   );
@@ -134,7 +134,7 @@ function SlotCard({
         <div className="flex items-start justify-between gap-3">
           <div className="grid flex-1 gap-3 sm:grid-cols-2">
             <div>
-              <Label>Tip slot</Label>
+              <Label>Tip eveniment</Label>
               <Select
                 value={slot.slot_type}
                 onChange={(e) => {
@@ -169,7 +169,7 @@ function SlotCard({
             variant="ghost"
             size="icon"
             onClick={onDelete}
-            aria-label="Șterge slot"
+            aria-label="Șterge eveniment"
           >
             <Trash2 className="h-4 w-4 text-destructive" />
           </Button>
@@ -276,7 +276,7 @@ function SlotCard({
 
         <div className="flex items-center gap-3">
           <Button size="sm" onClick={save} disabled={saving}>
-            {saving ? "Se salvează…" : "Salvează slotul"}
+            {saving ? "Se salvează…" : "Salvează evenimentul"}
           </Button>
           {saved && <span className="text-sm text-success">Salvat ✓</span>}
         </div>

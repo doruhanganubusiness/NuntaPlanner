@@ -16,8 +16,11 @@ import {
   Users,
 } from "lucide-react";
 
+// Titlul paginii — folosit deopotrivă ca meta title și ca H1 (vezi Hero).
+const TITLE = "Membri și permisiuni la planificarea nunții";
+
 export const metadata: Metadata = pageMeta({
-  title: "Membri și permisiuni la planificarea nunții",
+  title: TITLE,
   description:
     "Invită miri, părinți și nași cu rol și drept de vizualizare sau editare. Colaborați la aceeași planificare a nunții.",
   path: "/pentru-miri/membri",
@@ -77,7 +80,7 @@ export default function MembriPage() {
       <Hero
         icon={Users}
         eyebrow="TAB · Membri"
-        title="Colaborați la aceeași nuntă"
+        title={TITLE}
         intro="Invită oamenii apropiați să planifice alături de tine, fiecare cu rolul și drepturile lui — de la simpla vizualizare la editare completă."
         primary={{ href: "/register", label: "Invită-ți echipa" }}
         secondary={{ href: "/pentru-miri", label: "Vezi toate tab-urile" }}

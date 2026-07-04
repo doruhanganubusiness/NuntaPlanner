@@ -33,8 +33,8 @@ export default async function MembersPage({
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Ștergerea planificării elimină definitiv toate detaliile, sloturile
-            și membrii. Acțiunea nu poate fi anulată.
+            Ștergerea planificării elimină definitiv toate detaliile,
+            evenimentele și membrii. Acțiunea nu poate fi anulată.
           </p>
           <DeleteWeddingButton weddingId={id} redirectTo="/dashboard" />
         </CardContent>

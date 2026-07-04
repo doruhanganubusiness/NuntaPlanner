@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const CONFIRM =
-  "Sigur ștergi această planificare? Se șterg toate detaliile, sloturile și membrii. Acțiunea nu poate fi anulată.";
+  "Sigur ștergi această planificare? Se șterg toate detaliile, evenimentele și membrii. Acțiunea nu poate fi anulată.";
 
 /**
  * Șterge o nuntă (owner-only prin RLS). Cere confirmare — acțiunea e ireversibilă.

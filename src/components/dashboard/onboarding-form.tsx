@@ -77,7 +77,7 @@ export function OnboardingForm() {
   const [weddingDate, setWeddingDate] = useState("");
   const [style, setStyle] = useState("");
 
-  // Sloturi
+  // Evenimente
   const [slots, setSlots] = useState<SlotDraft[]>([newSlot("reception")]);
 
   // Buget
@@ -238,7 +238,7 @@ export function OnboardingForm() {
         </CardContent>
       </Card>
 
-      {/* 2. Sloturile zilei */}
+      {/* 2. Evenimentele zilei */}
       <Card>
         <CardHeader>
           <CardTitle>2. Programul zilei</CardTitle>
@@ -281,7 +281,7 @@ export function OnboardingForm() {
                     onClick={() =>
                       setSlots((x) => x.filter((y) => y.key !== s.key))
                     }
-                    aria-label="Șterge slot"
+                    aria-label="Șterge eveniment"
                   >
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
@@ -397,7 +397,7 @@ export function OnboardingForm() {
             variant="outline"
             onClick={() => setSlots((s) => [...s, newSlot("civil_ceremony")])}
           >
-            + Adaugă slot
+            + Adaugă eveniment
           </Button>
         </CardContent>
       </Card>

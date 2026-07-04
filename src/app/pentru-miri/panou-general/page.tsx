@@ -17,8 +17,11 @@ import {
   Wallet,
 } from "lucide-react";
 
+// Titlul paginii — folosit deopotrivă ca meta title și ca H1 (vezi Hero).
+const TITLE = "Panoul general: progresul planificării nunții";
+
 export const metadata: Metadata = pageMeta({
-  title: "Panoul general: progresul planificării nunții",
+  title: TITLE,
   description:
     "Vezi într-o privire progresul planificării, zilele rămase până la nuntă, invitații, bugetul și recomandările rapide.",
   path: "/pentru-miri/panou-general",
@@ -29,7 +32,7 @@ const features: Feature[] = [
   {
     icon: TrendingUp,
     title: "Bară de progres",
-    text: "Un procent care crește pe măsură ce completezi regiunea, data, tipul, stilul, sloturile și bugetul. Vezi exact cât mai ai de făcut.",
+    text: "Un procent care crește pe măsură ce completezi regiunea, data, tipul, stilul, evenimentele și bugetul. Vezi exact cât mai ai de făcut.",
   },
   {
     icon: CalendarDays,
@@ -39,7 +42,7 @@ const features: Feature[] = [
   {
     icon: Users,
     title: "Total invitați",
-    text: "Suma adulților și copiilor din toate sloturile, plus câte momente ai adăugat în programul zilei.",
+    text: "Suma adulților și copiilor din toate evenimentele, plus câte momente ai adăugat în programul zilei.",
   },
   {
     icon: Wallet,
@@ -73,7 +76,7 @@ export default function PanouGeneralPage() {
       <Hero
         icon={LayoutDashboard}
         eyebrow="TAB · Panou general"
-        title="Panoul general al nunții tale"
+        title={TITLE}
         intro="Primul ecran după ce deschizi o nuntă: progresul planificării, cifrele-cheie și recomandările, toate la un loc."
         primary={{ href: "/register", label: "Deschide-ți panoul" }}
         secondary={{ href: "/pentru-miri", label: "Vezi toate tab-urile" }}

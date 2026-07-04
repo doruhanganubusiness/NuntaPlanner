@@ -15,8 +15,11 @@ import {
   Wine,
 } from "lucide-react";
 
+// Titlul paginii — folosit deopotrivă ca meta title și ca H1 (vezi Hero).
+const TITLE = "Buget nuntă: alocare pe categorii și priorități";
+
 export const metadata: Metadata = pageMeta({
-  title: "Buget nuntă: alocare pe categorii și priorități",
+  title: TITLE,
   description:
     "Introdu bugetul sau folosește-l pe cel recomandat, prioritizează categoriile și vezi alocarea vizuală pe fiecare cheltuială.",
   path: "/pentru-miri/buget",
@@ -71,7 +74,7 @@ export default function BugetPage() {
       <Hero
         icon={Wallet}
         eyebrow="TAB · Buget"
-        title="Bugetul nunții, defalcat inteligent"
+        title={TITLE}
         intro="Stabilești cât vrei să cheltuiești și ce contează cel mai mult, iar aplicația împarte suma pe categorii și ți-o arată vizual."
         primary={{ href: "/register", label: "Calculează-ți bugetul" }}
         secondary={{ href: "/pentru-miri", label: "Vezi toate tab-urile" }}

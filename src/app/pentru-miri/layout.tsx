@@ -1,5 +1,6 @@
 import { HeaderAuthNav } from "@/components/header-auth-nav";
 import { Logo } from "@/components/logo";
+import { MainNav } from "@/components/main-nav";
 import { PentruMiriNav } from "@/components/marketing/pentru-miri-nav";
 import Link from "next/link";
 
@@ -15,7 +16,10 @@ export default function PentruMiriLayout({
           <Link href="/">
             <Logo />
           </Link>
-          <HeaderAuthNav />
+          <div className="flex items-center gap-1 sm:gap-2">
+            <MainNav />
+            <HeaderAuthNav />
+          </div>
         </div>
       </header>
 

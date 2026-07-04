@@ -9,7 +9,7 @@ export const PENTRU_MIRI_PAGES = [
   { href: "/pentru-miri", label: "Prezentare" },
   { href: "/pentru-miri/panou-general", label: "Panou general" },
   { href: "/pentru-miri/detalii", label: "Detalii" },
-  { href: "/pentru-miri/sloturi", label: "Sloturi" },
+  { href: "/pentru-miri/evenimente", label: "Evenimente" },
   { href: "/pentru-miri/buget", label: "Buget" },
   { href: "/pentru-miri/plan", label: "Plan" },
   { href: "/pentru-miri/invitatie", label: "Invitație" },

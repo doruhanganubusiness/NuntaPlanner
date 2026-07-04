@@ -109,13 +109,13 @@ export default async function OverviewPage({
           <CardHeader className="flex flex-row items-center gap-2">
             <Users className="h-5 w-5 text-primary" />
             <CardTitle className="text-sm text-muted-foreground">
-              Invitați (total sloturi)
+              Invitați (total evenimente)
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{formatNum(totalGuests)}</p>
             <p className="text-sm text-muted-foreground">
-              {slots?.length ?? 0} sloturi
+              {slots?.length ?? 0} evenimente
             </p>
           </CardContent>
         </Card>
@@ -189,7 +189,7 @@ export default async function OverviewPage({
             </>
           ) : (
             <p className="text-sm text-muted-foreground">
-              Adaugă sloturi ca să primești recomandări.
+              Adaugă evenimente ca să primești recomandări.
             </p>
           )}
         </CardContent>
