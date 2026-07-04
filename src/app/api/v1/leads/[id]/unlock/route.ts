@@ -47,7 +47,8 @@ export async function POST(req: Request, { params }: Ctx) {
       },
     ],
     metadata: { lead_id: leadId, vendor_id: vendor.id, kind: "cpl_lead" },
-    success_url: `${origin}/vendor/leads?unlocked=1`,
+    // Confirmăm plata la întoarcere (fără webhook): endpoint-ul verifică sesiunea.
+    success_url: `${origin}/api/v1/stripe/confirm?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/vendor/leads`,
   });
 

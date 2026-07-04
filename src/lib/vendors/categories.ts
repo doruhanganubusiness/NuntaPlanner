@@ -32,7 +32,7 @@ export const VENDOR_CATEGORIES: VendorCategory[] = [
   { slug: "mobilier-exterior", label: "Gazebo & Mobilier exterior", tier: "mid" },
   // TIER PREMIUM
   { slug: "restaurant-catering", label: "Restaurant & Catering", tier: "premium" },
-  { slug: "sala-locatie", label: "Sală & Locație eveniment", tier: "premium" },
+  { slug: "sala-locatie", label: "Ballroom & Locație eveniment", tier: "premium" },
   { slug: "formatie", label: "Formație live & Cântăreți", tier: "premium" },
   { slug: "planner-full", label: "Planificator full-service", tier: "premium" },
   { slug: "honeymoon", label: "Honeymoon & Travel", tier: "premium" },
@@ -47,6 +47,11 @@ export const TIER_PRICING: Record<
   mid: { cplRON: 15, monthlyRON: 200, label: "Mediu" },
   premium: { cplRON: 30, monthlyRON: 500, label: "Premium" },
 };
+
+// Toate categoriile împreună (alfabetic), fără grupare pe tier — pentru selectoare.
+export const VENDOR_CATEGORIES_SORTED = [...VENDOR_CATEGORIES].sort((a, b) =>
+  a.label.localeCompare(b.label, "ro"),
+);
 
 export const CATEGORY_BY_SLUG = new Map(
   VENDOR_CATEGORIES.map((c) => [c.slug, c]),

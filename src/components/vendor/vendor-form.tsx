@@ -11,7 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { VendorRow } from "@/lib/supabase/database.types";
 import {
   TIER_PRICING,
-  VENDOR_CATEGORIES,
+  VENDOR_CATEGORIES_SORTED,
   tierForCategory,
 } from "@/lib/vendors/categories";
 import { useRouter } from "next/navigation";
@@ -122,14 +122,10 @@ export function VendorForm({
           onChange={(e) => setCategory(e.target.value)}
         >
           <option value="">Alege categoria…</option>
-          {(["premium", "mid", "budget"] as const).map((t) => (
-            <optgroup key={t} label={TIER_PRICING[t].label}>
-              {VENDOR_CATEGORIES.filter((c) => c.tier === t).map((c) => (
-                <option key={c.slug} value={c.slug}>
-                  {c.label}
-                </option>
-              ))}
-            </optgroup>
+          {VENDOR_CATEGORIES_SORTED.map((c) => (
+            <option key={c.slug} value={c.slug}>
+              {c.label}
+            </option>
           ))}
         </Select>
         {tier && (

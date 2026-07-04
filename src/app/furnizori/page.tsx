@@ -4,8 +4,7 @@ import { COUNTIES } from "@/lib/localities/counties";
 import { pageMeta } from "@/lib/seo";
 import { createClient } from "@/lib/supabase/server";
 import {
-  TIER_PRICING,
-  VENDOR_CATEGORIES,
+  VENDOR_CATEGORIES_SORTED,
   categoryLabel,
 } from "@/lib/vendors/categories";
 import { Star } from "lucide-react";
@@ -66,14 +65,10 @@ export default async function FurnizoriPage({
           <label className="mb-1 block text-sm font-medium">Categorie</label>
           <Select name="category" defaultValue={category ?? ""}>
             <option value="">Toate categoriile</option>
-            {(["premium", "mid", "budget"] as const).map((t) => (
-              <optgroup key={t} label={TIER_PRICING[t].label}>
-                {VENDOR_CATEGORIES.filter((c) => c.tier === t).map((c) => (
-                  <option key={c.slug} value={c.slug}>
-                    {c.label}
-                  </option>
-                ))}
-              </optgroup>
+            {VENDOR_CATEGORIES_SORTED.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.label}
+              </option>
             ))}
           </Select>
         </div>

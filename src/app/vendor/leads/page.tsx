@@ -38,8 +38,7 @@ export default async function VendorLeadsPage({
 
       {unlocked && (
         <div className="rounded-md bg-success/10 px-4 py-3 text-sm text-success">
-          Plată reușită! Contactul se dezvăluie în câteva secunde — reîncarcă
-          pagina dacă nu apare imediat.
+          Plată reușită — contactul a fost deblocat.
         </div>
       )}
 
