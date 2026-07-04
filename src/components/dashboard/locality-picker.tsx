@@ -33,18 +33,19 @@ export function LocalityPicker({
   onChange: (v: LocalityValue) => void;
 }) {
   const [localities, setLocalities] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+  // Județul pentru care e încărcată lista curentă; „loading” se derivă din el,
+  // fără setState sincron în efect.
+  const [loadedCode, setLoadedCode] = useState<string | null>(null);
   const [custom, setCustom] = useState(false);
 
-  // Încarcă localitățile când se schimbă județul.
+  const loading = !!value.county_code && loadedCode !== value.county_code;
+
+  // Încarcă localitățile când se schimbă județul. Când nu e ales niciun județ,
+  // lista e golită din handler (selectCounty).
   useEffect(() => {
     const code = value.county_code;
-    if (!code) {
-      setLocalities([]);
-      return;
-    }
+    if (!code) return;
     let active = true;
-    setLoading(true);
     createClient()
       .from("localities")
       .select("name")
@@ -54,9 +55,9 @@ export function LocalityPicker({
         if (!active) return;
         const names = (data ?? []).map((r) => r.name as string);
         setLocalities(names);
+        setLoadedCode(code);
         // Dacă localitatea salvată nu e în listă, trecem pe modul custom.
         if (value.locality && !names.includes(value.locality)) setCustom(true);
-        setLoading(false);
       });
     return () => {
       active = false;
@@ -67,6 +68,10 @@ export function LocalityPicker({
   function selectCounty(code: string) {
     const county = COUNTY_BY_CODE.get(code)?.name ?? null;
     setCustom(false);
+    if (!code) {
+      setLocalities([]);
+      setLoadedCode(null);
+    }
     onChange({ county_code: code || null, county, locality: null });
   }
 

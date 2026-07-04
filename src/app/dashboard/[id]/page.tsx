@@ -13,6 +13,12 @@ import { formatNum, formatRON } from "@/lib/utils";
 import { CalendarDays, Users, Wine } from "lucide-react";
 import Link from "next/link";
 
+// Câte zile mai sunt până la o dată. Definit în afara componentei: citirea
+// timpului curent (Date.now) e impură și nu are ce căuta în corpul de render.
+function daysUntil(dateStr: string): number {
+  return Math.ceil((new Date(dateStr).getTime() - Date.now()) / 86_400_000);
+}
+
 export default async function OverviewPage({
   params,
 }: {
@@ -40,12 +46,7 @@ export default async function OverviewPage({
   );
 
   const daysLeft =
-    wedding?.wedding_date != null
-      ? Math.ceil(
-          (new Date(wedding.wedding_date).getTime() - Date.now()) /
-            86_400_000,
-        )
-      : null;
+    wedding?.wedding_date != null ? daysUntil(wedding.wedding_date) : null;
 
   // Progres de planificare — câte informații-cheie sunt completate.
   const checks = [

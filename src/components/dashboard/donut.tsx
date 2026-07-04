@@ -17,14 +17,17 @@ const PALETTE = [
 export function Donut({ segments }: { segments: DonutSegment[] }) {
   const r = 60;
   const c = 2 * Math.PI * r;
-  let offset = 0;
+  // Offset cumulat pentru fiecare segment, precalculat fără mutație în render.
+  const offsets = segments.map((_, i) =>
+    segments.slice(0, i).reduce((sum, seg) => sum + seg.pct * c, 0),
+  );
 
   return (
     <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
       <svg viewBox="0 0 160 160" className="h-40 w-40 -rotate-90">
         {segments.map((s, i) => {
           const len = s.pct * c;
-          const el = (
+          return (
             <circle
               key={i}
               cx="80"
@@ -34,11 +37,9 @@ export function Donut({ segments }: { segments: DonutSegment[] }) {
               stroke={PALETTE[i % PALETTE.length]}
               strokeWidth="20"
               strokeDasharray={`${len} ${c - len}`}
-              strokeDashoffset={-offset}
+              strokeDashoffset={-offsets[i]}
             />
           );
-          offset += len;
-          return el;
         })}
       </svg>
       <ul className="flex-1 space-y-1.5 text-sm">

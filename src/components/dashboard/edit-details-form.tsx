@@ -105,7 +105,7 @@ export function EditDetailsForm({ wedding }: { wedding: WeddingRow }) {
           />
           {dateStatus === "estimated" && (
             <p className="mt-1 text-xs text-muted-foreground">
-              O vom afișa cu mențiunea „Dată estimată".
+              O vom afișa cu mențiunea „Dată estimată”.
             </p>
           )}
         </div>

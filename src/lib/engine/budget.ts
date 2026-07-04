@@ -7,7 +7,7 @@ import type {
   MusicResult,
   WeddingInput,
 } from "./types";
-import { ceil, num, round } from "./util";
+import { num, round } from "./util";
 
 /** Cât de mult influențează prioritizarea drag&drop procentele (0..1). */
 const PRIORITY_STRENGTH = 0.15;
