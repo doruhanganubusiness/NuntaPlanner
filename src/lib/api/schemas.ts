@@ -115,6 +115,39 @@ export const createSlotSchema = z.object({
 
 export const updateSlotSchema = createSlotSchema.partial();
 
+/* ------------------------------ vendors ------------------------------ */
+export const createVendorSchema = z.object({
+  business_name: z.string().min(1).max(120),
+  category: z.string().min(1),
+  regions: z.array(z.string().min(1)).min(1, "Alege cel puțin o regiune"),
+  description: z.string().max(2000).nullable().optional(),
+  phone: z.string().max(40).nullable().optional(),
+  email: z.email().nullable().optional(),
+  website: z.string().max(200).nullable().optional(),
+  logo_url: z.string().max(500).nullable().optional(),
+});
+
+export const updateVendorSchema = createVendorSchema.partial();
+
+/** Câmpuri pe care le poate schimba doar adminul. */
+export const adminVendorSchema = z
+  .object({
+    status: z.enum(["pending", "active", "suspended", "inactive"]),
+    verified: z.boolean(),
+  })
+  .partial();
+
+/* ------------------------------- leads -------------------------------- */
+export const createLeadSchema = z.object({
+  vendor_id: z.uuid(),
+  message: z.string().max(1000).nullable().optional(),
+  client_phone: z.string().max(40).nullable().optional(),
+});
+
+export const updateLeadStatusSchema = z.object({
+  status: z.enum(["contacted", "converted", "lost"]),
+});
+
 /* -------------------------------- rsvp -------------------------------- */
 export const rsvpSchema = z.object({
   guest_name: z.string().min(1).max(120),

@@ -11,14 +11,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+type AccountType = "client" | "vendor";
+
 export default function RegisterPage() {
   const router = useRouter();
+  const [accountType, setAccountType] = useState<AccountType>("client");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [needsVerify, setNeedsVerify] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const home = accountType === "vendor" ? "/vendor" : "/dashboard";
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,10 +34,10 @@ export default function RegisterPage() {
       email,
       password,
       options: {
-        data: { full_name: fullName, user_type: "client" },
+        data: { full_name: fullName, user_type: accountType },
         emailRedirectTo:
           typeof window !== "undefined"
-            ? `${window.location.origin}/dashboard`
+            ? `${window.location.origin}${home}`
             : undefined,
       },
     });
@@ -43,7 +48,7 @@ export default function RegisterPage() {
     }
     if (data.session) {
       const next = new URLSearchParams(window.location.search).get("next");
-      router.push(next || "/dashboard");
+      router.push(next || home);
       router.refresh();
     } else {
       setNeedsVerify(true);
@@ -84,7 +89,40 @@ export default function RegisterPage() {
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="full_name">Nume complet</Label>
+              <Label>Tip cont</Label>
+              <div className="mt-1 grid grid-cols-2 gap-2">
+                {(
+                  [
+                    { v: "client", label: "Miri" },
+                    { v: "vendor", label: "Furnizor" },
+                  ] as const
+                ).map((opt) => (
+                  <button
+                    key={opt.v}
+                    type="button"
+                    onClick={() => setAccountType(opt.v)}
+                    className={
+                      "rounded-md border px-3 py-2 text-sm font-medium transition-colors " +
+                      (accountType === opt.v
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-card hover:bg-muted")
+                    }
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {accountType === "vendor"
+                  ? "Cont de furnizor: îți listezi serviciile și primești cereri de la miri."
+                  : "Cont de miri: planifică-ți nunta și contactează furnizori."}
+              </p>
+            </div>
+
+            <div>
+              <Label htmlFor="full_name">
+                {accountType === "vendor" ? "Persoană de contact" : "Nume complet"}
+              </Label>
               <Input
                 id="full_name"
                 required

@@ -9,7 +9,10 @@ import { usePathname } from "next/navigation";
  * Momentan există o singură pagină de site („Pentru miri”); lista e gândită
  * să crească ușor pe măsură ce apar pagini noi.
  */
-export const SITE_NAV = [{ href: "/pentru-miri", label: "Pentru miri" }] as const;
+export const SITE_NAV = [
+  { href: "/pentru-miri", label: "Pentru miri" },
+  { href: "/furnizori", label: "Furnizori" },
+] as const;
 
 export function MainNav({ className }: { className?: string }) {
   const pathname = usePathname();

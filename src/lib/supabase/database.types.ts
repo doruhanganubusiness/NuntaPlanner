@@ -34,11 +34,26 @@ export type SlotTypeDb =
   | "baptism"
   | "reception";
 
+// ---- Faza 2: marketplace furnizori ----
+export type VendorTierDb = "budget" | "mid" | "premium";
+export type VendorStatus = "pending" | "active" | "suspended" | "inactive";
+export type LeadStatus =
+  | "new"
+  | "unlocked"
+  | "contacted"
+  | "converted"
+  | "lost";
+export type PaymentType = "cpl_lead" | "subscription_monthly";
+export type PaymentStatus = "pending" | "succeeded" | "failed" | "refunded";
+export type SubscriptionStatus = "active" | "cancelled" | "paused";
+export type ReviewRole = "vendor" | "couple";
+
 export type ProfileRow = {
   id: string;
   full_name: string | null;
   phone: string | null;
   user_type: UserType;
+  is_admin: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -136,6 +151,98 @@ export type RsvpRow = {
   created_at: string;
 };
 
+export type VendorRow = {
+  id: string;
+  user_id: string;
+  business_name: string;
+  category: string;
+  tier: VendorTierDb;
+  regions: string[];
+  description: string | null;
+  logo_url: string | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  rating: number;
+  verified: boolean;
+  status: VendorStatus;
+  stripe_connect_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type LeadRow = {
+  id: string;
+  wedding_id: string;
+  vendor_id: string;
+  client_email: string;
+  client_phone: string | null;
+  event_date: string | null;
+  event_region: string | null;
+  message: string | null;
+  status: LeadStatus;
+  is_unlocked_by_vendor: boolean;
+  unlocked_at: string | null;
+  vendor_contacted_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+/** Forma întoarsă de RPC `vendor_leads()` — contact mascat dacă nedeblocat. */
+export type VendorLeadRow = {
+  id: string;
+  wedding_id: string;
+  vendor_id: string;
+  client_email: string | null;
+  client_phone: string | null;
+  event_date: string | null;
+  event_region: string | null;
+  message: string | null;
+  status: LeadStatus;
+  is_unlocked_by_vendor: boolean;
+  created_at: string;
+};
+
+export type ReviewRow = {
+  id: string;
+  lead_id: string | null;
+  vendor_id: string;
+  wedding_id: string;
+  author_role: ReviewRole;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+};
+
+export type PaymentRow = {
+  id: string;
+  vendor_id: string;
+  lead_id: string | null;
+  payment_type: PaymentType;
+  amount: number;
+  currency: string;
+  stripe_payment_intent_id: string | null;
+  stripe_subscription_id: string | null;
+  status: PaymentStatus;
+  created_at: string;
+  updated_at: string;
+};
+
+export type SubscriptionRow = {
+  id: string;
+  vendor_id: string;
+  tier: VendorTierDb;
+  monthly_price: number;
+  subscription_start_date: string;
+  renewal_day_of_month: number | null;
+  stripe_subscription_id: string | null;
+  status: SubscriptionStatus;
+  next_renewal_date: string | null;
+  cancelled_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 type TableShape<Row, Insert, Update> = {
   Row: Row;
   Insert: Insert;
@@ -198,6 +305,53 @@ export interface Database {
         Partial<RsvpRow> & { wedding_id: string; guest_name: string },
         Partial<RsvpRow>
       >;
+      vendors: TableShape<
+        VendorRow,
+        Partial<VendorRow> & {
+          user_id: string;
+          business_name: string;
+          category: string;
+          tier: VendorTierDb;
+        },
+        Partial<VendorRow>
+      >;
+      leads: TableShape<
+        LeadRow,
+        Partial<LeadRow> & {
+          wedding_id: string;
+          vendor_id: string;
+          client_email: string;
+        },
+        Partial<LeadRow>
+      >;
+      reviews: TableShape<
+        ReviewRow,
+        Partial<ReviewRow> & {
+          vendor_id: string;
+          wedding_id: string;
+          author_role: ReviewRole;
+          rating: number;
+        },
+        Partial<ReviewRow>
+      >;
+      payments: TableShape<
+        PaymentRow,
+        Partial<PaymentRow> & {
+          vendor_id: string;
+          payment_type: PaymentType;
+          amount: number;
+        },
+        Partial<PaymentRow>
+      >;
+      subscriptions: TableShape<
+        SubscriptionRow,
+        Partial<SubscriptionRow> & {
+          vendor_id: string;
+          tier: VendorTierDb;
+          monthly_price: number;
+        },
+        Partial<SubscriptionRow>
+      >;
     };
     Views: Record<string, never>;
     Functions: {
@@ -217,6 +371,27 @@ export interface Database {
         Args: { wid: string; perms: MemberPermission[] };
         Returns: boolean;
       };
+      is_admin: {
+        Args: Record<string, never>;
+        Returns: boolean;
+      };
+      create_lead: {
+        Args: {
+          p_wedding_id: string;
+          p_vendor_id: string;
+          p_message?: string | null;
+          p_client_phone?: string | null;
+        };
+        Returns: LeadRow;
+      };
+      vendor_leads: {
+        Args: Record<string, never>;
+        Returns: VendorLeadRow[];
+      };
+      set_lead_status: {
+        Args: { p_lead_id: string; p_status: LeadStatus };
+        Returns: undefined;
+      };
     };
     Enums: {
       user_type: UserType;
@@ -228,6 +403,13 @@ export interface Database {
       member_permission: MemberPermission;
       member_status: MemberStatus;
       slot_type: SlotTypeDb;
+      vendor_tier: VendorTierDb;
+      vendor_status: VendorStatus;
+      lead_status: LeadStatus;
+      payment_type: PaymentType;
+      payment_status: PaymentStatus;
+      subscription_status: SubscriptionStatus;
+      review_role: ReviewRole;
     };
     CompositeTypes: Record<string, never>;
   };

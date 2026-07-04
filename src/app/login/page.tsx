@@ -23,7 +23,7 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -33,7 +33,17 @@ export default function LoginPage() {
       return;
     }
     const next = new URLSearchParams(window.location.search).get("next");
-    router.push(next || "/dashboard");
+    if (next) {
+      router.push(next);
+    } else {
+      // Rutare după tipul contului: furnizorii merg în dashboard-ul lor.
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("user_type")
+        .eq("id", data.user.id)
+        .maybeSingle();
+      router.push(profile?.user_type === "vendor" ? "/vendor" : "/dashboard");
+    }
     router.refresh();
   }
 
