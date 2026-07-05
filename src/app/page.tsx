@@ -1,6 +1,7 @@
 import { HeaderAuthNav } from "@/components/header-auth-nav";
 import { Logo } from "@/components/logo";
-import { MainNav } from "@/components/main-nav";
+import { MainNav, MobileNav } from "@/components/main-nav";
+import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { pageMeta } from "@/lib/seo";
@@ -50,6 +51,7 @@ export default function Home() {
         <div className="flex items-center gap-1 sm:gap-2">
           <MainNav />
           <HeaderAuthNav />
+          <MobileNav />
         </div>
       </header>
 
@@ -88,12 +90,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-10 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-        <span>© {new Date().getFullYear()} NuntaPlanner. Gratuit pentru miri.</span>
-        <Link href="/pentru-miri" className="hover:text-foreground">
-          Pentru miri — cum funcționează
-        </Link>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }
