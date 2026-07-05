@@ -6,6 +6,8 @@ import { createClient } from "@/lib/supabase/server";
 import type { VendorLeadRow, VendorStatus } from "@/lib/supabase/database.types";
 import { TIER_PRICING, categoryLabel } from "@/lib/vendors/categories";
 import { getActiveSubscription } from "@/lib/vendors/subscription";
+import { MAX_VENDOR_IMAGES, MAX_VENDOR_VIDEOS } from "@/lib/vendors/media";
+import { Check, X } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -53,8 +55,24 @@ export default async function VendorOverview() {
   const count = (s: string) => leads.filter((l) => l.status === s).length;
 
   const sub = await getActiveSubscription(supabase, vendor.id);
+  const { data: mediaData } = await supabase
+    .from("vendor_media")
+    .select("type")
+    .eq("vendor_id", vendor.id);
+  const imageCount = (mediaData ?? []).filter((m) => m.type === "image").length;
+  const videoCount = (mediaData ?? []).filter((m) => m.type === "video").length;
+
   const st = STATUS[vendor.status];
   const pricing = TIER_PRICING[vendor.tier];
+
+  // Completitudine profil — ghidează furnizorul spre un profil care atrage cereri.
+  const checklist = [
+    { label: "Descriere adăugată", done: !!vendor.description?.trim() },
+    { label: "Logo încărcat", done: !!vendor.logo_url },
+    { label: "Contact (telefon sau email)", done: !!(vendor.phone || vendor.email) },
+    { label: "Cel puțin o imagine în galerie", done: imageCount > 0 },
+  ];
+  const doneCount = checklist.filter((c) => c.done).length;
 
   return (
     <div className="space-y-6">
@@ -99,6 +117,57 @@ export default async function VendorOverview() {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{count("converted")}</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Profilul tău</span>
+              <span className="text-sm font-normal text-muted-foreground">
+                {doneCount}/{checklist.length} complet
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            <ul className="space-y-1.5">
+              {checklist.map((c) => (
+                <li key={c.label} className="flex items-center gap-2">
+                  {c.done ? (
+                    <Check className="h-4 w-4 text-success" />
+                  ) : (
+                    <X className="h-4 w-4 text-muted-foreground" />
+                  )}
+                  <span className={c.done ? "" : "text-muted-foreground"}>
+                    {c.label}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <Button variant="outline" size="sm" asChild className="mt-1">
+              <Link href="/vendor/profile">Editează profilul</Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Galerie</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            <p>
+              <b>{imageCount}</b>/{MAX_VENDOR_IMAGES} imagini · <b>{videoCount}</b>
+              /{MAX_VENDOR_VIDEOS} videoclipuri
+            </p>
+            <p className="text-muted-foreground">
+              Furnizorii cu galerie primesc mai multe cereri. Adaugă fotografii
+              și clipuri cu lucrările tale.
+            </p>
+            <Button variant="outline" size="sm" asChild className="mt-1">
+              <Link href="/vendor/galerie">Gestionează galeria</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
