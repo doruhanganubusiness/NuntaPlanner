@@ -3,13 +3,25 @@ import { COUNTIES } from "@/lib/localities/counties";
 import { countySlug } from "@/lib/localities/geo";
 import { SITE_URL } from "@/lib/seo";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { VENDOR_CATEGORIES_SORTED } from "@/lib/vendors/categories";
+import {
+  VENDOR_CATEGORIES_SORTED,
+  categoryLabel,
+} from "@/lib/vendors/categories";
+
+export type VideoEntry = {
+  contentLoc: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+};
 
 export type UrlEntry = {
   loc: string;
   lastmod?: string;
   changefreq?: string;
   priority?: number;
+  images?: string[];
+  videos?: VideoEntry[];
 };
 
 /** Copiii sitemap-ului, pe tip de pagină. Ordinea = ordinea din index. */
@@ -20,6 +32,8 @@ export const SITEMAP_TYPES = [
   "zone",
   "furnizori",
   "blog",
+  "images",
+  "videos",
 ] as const;
 
 export type SitemapType = (typeof SITEMAP_TYPES)[number];
@@ -133,6 +147,68 @@ export async function entriesFor(type: SitemapType): Promise<UrlEntry[]> {
       }
       return out;
     }
+
+    case "images":
+      return mediaEntries("image");
+
+    case "videos":
+      return mediaEntries("video");
+  }
+}
+
+/**
+ * O intrare de sitemap per furnizor (activ+verificat), cu imaginile sau
+ * videoclipurile lui atașate paginii publice de profil `/furnizori/[id]`.
+ */
+async function mediaEntries(type: "image" | "video"): Promise<UrlEntry[]> {
+  try {
+    const admin = createAdminClient();
+    const [{ data: vendorsData }, { data: mediaData }] = await Promise.all([
+      admin
+        .from("vendors")
+        .select("id, business_name, category, logo_url")
+        .eq("status", "active")
+        .eq("verified", true),
+      admin
+        .from("vendor_media")
+        .select("vendor_id, url, title")
+        .eq("type", type)
+        .order("position"),
+    ]);
+
+    const vendors = new Map(
+      (vendorsData ?? []).map((v) => [v.id, v]),
+    );
+    const byVendor = new Map<string, { url: string; title: string | null }[]>();
+    for (const m of mediaData ?? []) {
+      if (!vendors.has(m.vendor_id)) continue;
+      const arr = byVendor.get(m.vendor_id) ?? [];
+      arr.push({ url: m.url, title: m.title });
+      byVendor.set(m.vendor_id, arr);
+    }
+
+    const out: UrlEntry[] = [];
+    for (const [vendorId, items] of byVendor) {
+      const v = vendors.get(vendorId)!;
+      const loc = u(`/furnizori/${vendorId}`);
+      if (type === "image") {
+        out.push({ loc, images: items.map((i) => i.url) });
+      } else {
+        const thumbnail = v.logo_url ?? `${SITE_URL}/logo.png`;
+        out.push({
+          loc,
+          videos: items.map((i) => ({
+            contentLoc: i.url,
+            title: i.title || v.business_name,
+            description: `${v.business_name} — ${categoryLabel(v.category)}`,
+            thumbnail,
+          })),
+        });
+      }
+    }
+    return out;
+  } catch {
+    return [];
   }
 }
 
@@ -149,7 +225,7 @@ const XML_HEAD =
   '<?xml version="1.0" encoding="UTF-8"?>' +
   '<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>';
 
-/** Un <urlset> (sitemap copil). */
+/** Un <urlset> (sitemap copil). Include namespace-urile image/video. */
 export function urlsetXml(entries: UrlEntry[]): string {
   const body = entries
     .map((e) => {
@@ -157,10 +233,28 @@ export function urlsetXml(entries: UrlEntry[]): string {
       if (e.lastmod) parts.push(`<lastmod>${e.lastmod}</lastmod>`);
       if (e.changefreq) parts.push(`<changefreq>${e.changefreq}</changefreq>`);
       if (e.priority != null) parts.push(`<priority>${e.priority}</priority>`);
+      for (const img of e.images ?? []) {
+        parts.push(`<image:image><image:loc>${esc(img)}</image:loc></image:image>`);
+      }
+      for (const v of e.videos ?? []) {
+        parts.push(
+          "<video:video>" +
+            `<video:thumbnail_loc>${esc(v.thumbnail)}</video:thumbnail_loc>` +
+            `<video:title>${esc(v.title)}</video:title>` +
+            `<video:description>${esc(v.description)}</video:description>` +
+            `<video:content_loc>${esc(v.contentLoc)}</video:content_loc>` +
+            "</video:video>",
+        );
+      }
       return `<url>${parts.join("")}</url>`;
     })
     .join("");
-  return `${XML_HEAD}<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${body}</urlset>`;
+  return (
+    `${XML_HEAD}<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" ` +
+    'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" ' +
+    'xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">' +
+    `${body}</urlset>`
+  );
 }
 
 /** Indexul centralizator <sitemapindex>. */
