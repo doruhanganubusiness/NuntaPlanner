@@ -1,3 +1,4 @@
+import { Stars } from "@/components/reviews/stars";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -63,6 +64,14 @@ export default async function VendorDetailPage({
   const images = media.filter((m) => m.type === "image");
   const videos = media.filter((m) => m.type === "video");
 
+  const { data: reviewsData } = await supabase
+    .from("reviews")
+    .select("id, rating, comment, created_at")
+    .eq("vendor_id", v.id)
+    .eq("author_role", "couple")
+    .order("created_at", { ascending: false });
+  const reviews = reviewsData ?? [];
+
   const pricing = TIER_PRICING[v.tier];
 
   return (
@@ -97,6 +106,12 @@ export default async function VendorDetailPage({
             <span className="inline-flex items-center gap-1 text-sm">
               <Star className="h-4 w-4 fill-current text-warning" />
               {v.rating.toFixed(1)}
+              {reviews.length > 0 && (
+                <span className="text-muted-foreground">
+                  ({reviews.length}{" "}
+                  {reviews.length === 1 ? "recenzie" : "recenzii"})
+                </span>
+              )}
             </span>
             <Badge tone="muted">{pricing.label}</Badge>
           </div>
@@ -143,6 +158,44 @@ export default async function VendorDetailPage({
           </div>
         </section>
       )}
+
+      <section>
+        <h2 className="mb-3 text-lg font-semibold">
+          Recenzii de la cupluri
+          {reviews.length > 0 && (
+            <span className="ml-2 text-sm font-normal text-muted-foreground">
+              {v.rating.toFixed(1)} din 5 · {reviews.length}{" "}
+              {reviews.length === 1 ? "recenzie" : "recenzii"}
+            </span>
+          )}
+        </h2>
+        {reviews.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Încă nu există recenzii pentru acest furnizor.
+          </p>
+        ) : (
+          <ul className="space-y-3">
+            {reviews.map((r) => (
+              <li
+                key={r.id}
+                className="rounded-lg border border-border bg-card p-4"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <Stars value={r.rating} />
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(r.created_at).toLocaleDateString("ro-RO")}
+                  </span>
+                </div>
+                {r.comment && (
+                  <p className="mt-2 whitespace-pre-line text-sm">
+                    {r.comment}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Card>

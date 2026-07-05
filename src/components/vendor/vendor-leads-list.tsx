@@ -1,11 +1,12 @@
 "use client";
 
 import { LeadConversation } from "@/components/chat/lead-conversation";
+import { ReviewForm } from "@/components/reviews/review-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api/client";
 import type { LeadStatus, VendorLeadRow } from "@/lib/supabase/database.types";
-import { Lock, MessageSquare } from "lucide-react";
+import { Lock, MessageSquare, Star } from "lucide-react";
 import { useState } from "react";
 
 const STATUS_LABEL: Record<LeadStatus, string> = {
@@ -29,6 +30,7 @@ export function VendorLeadsList({
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [chatId, setChatId] = useState<string | null>(null);
+  const [reviewId, setReviewId] = useState<string | null>(null);
 
   async function setStatus(id: string, status: "contacted" | "converted" | "lost") {
     setBusyId(id);
@@ -131,6 +133,16 @@ export function VendorLeadsList({
                   <MessageSquare className="h-3.5 w-3.5" />
                   {chatId === l.id ? "Închide chat" : "Conversație"}
                 </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() =>
+                    setReviewId((r) => (r === l.id ? null : l.id))
+                  }
+                >
+                  <Star className="h-3.5 w-3.5" />
+                  {reviewId === l.id ? "Închide" : "Recenzie client"}
+                </Button>
               </>
             ) : (
               <>
@@ -183,6 +195,18 @@ export function VendorLeadsList({
           {l.is_unlocked_by_vendor && chatId === l.id && (
             <div className="mt-3">
               <LeadConversation leadId={l.id} role="vendor" />
+            </div>
+          )}
+
+          {l.is_unlocked_by_vendor && reviewId === l.id && (
+            <div className="mt-3">
+              <ReviewForm
+                leadId={l.id}
+                vendorId={l.vendor_id}
+                weddingId={l.wedding_id}
+                authorRole="vendor"
+                targetLabel="acest cuplu"
+              />
             </div>
           )}
         </li>

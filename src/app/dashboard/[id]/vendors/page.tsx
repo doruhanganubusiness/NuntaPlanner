@@ -77,6 +77,8 @@ export default async function VendorsPage({
                   id: l.id,
                   status: l.status,
                   vendorName: l.vendors?.business_name ?? "Furnizor",
+                  vendorId: l.vendor_id,
+                  weddingId: id,
                   category: l.vendors?.category ?? null,
                 }),
               )}
