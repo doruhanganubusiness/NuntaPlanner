@@ -129,6 +129,7 @@ export function MainNav({ className }: { className?: string }) {
                 key={item.href}
                 href={item.href}
                 aria-current={on ? "page" : undefined}
+                onMouseEnter={() => setOpenMenu(null)}
                 className={cn(
                   "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
                   on
