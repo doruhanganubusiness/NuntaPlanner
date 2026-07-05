@@ -1,9 +1,10 @@
 import { NAV_TREE } from "@/lib/site-nav";
 import Link from "next/link";
+import { Fragment } from "react";
 
 /**
- * Footer-ul site-ului: fundal contrastant (închis), paginile-părinte o singură
- * dată și zona de copyright la final. Fără linkuri duplicate. Folosit în toate
+ * Footer-ul site-ului: fundal contrastant (închis), paginile-părinte (cu separator
+ * între ele) și zona de copyright la final. Fără linkuri duplicate. Folosit în toate
  * layout-urile publice + login/register.
  */
 export function SiteFooter() {
@@ -19,21 +20,44 @@ export function SiteFooter() {
             </p>
           </div>
 
-          <nav className="flex flex-wrap gap-x-6 gap-y-2 md:justify-end">
-            {NAV_TREE.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-sm font-medium text-background/80 transition-colors hover:text-background"
-              >
-                {item.label}
-              </Link>
+          <nav className="flex flex-wrap items-center gap-x-3 gap-y-2 md:justify-end">
+            {NAV_TREE.map((item, i) => (
+              <Fragment key={item.href}>
+                {i > 0 && (
+                  <span aria-hidden className="text-background/30">
+                    ·
+                  </span>
+                )}
+                <Link
+                  href={item.href}
+                  className="text-sm font-medium text-background/85 underline-offset-4 transition-colors hover:text-background hover:underline"
+                >
+                  {item.label}
+                </Link>
+              </Fragment>
             ))}
           </nav>
         </div>
 
-        <div className="mt-10 border-t border-background/15 pt-6 text-sm text-background/60">
-          © {new Date().getFullYear()} NuntaPlanner. Toate drepturile rezervate.
+        <div className="mt-10 flex flex-col items-center gap-2 border-t border-background/15 pt-6 text-center text-sm text-background/60 md:flex-row md:justify-between md:text-left">
+          <span>
+            ©{" "}
+            <Link
+              href="/"
+              className="font-medium text-background/85 underline-offset-4 transition-colors hover:text-background hover:underline"
+            >
+              NuntaPlanner
+            </Link>{" "}
+            {new Date().getFullYear()}. Toate drepturile rezervate.
+          </span>
+          <a
+            href="https://seo2agency.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="underline-offset-4 transition-colors hover:text-background hover:underline"
+          >
+            O platformă marca O2 Digital
+          </a>
         </div>
       </div>
     </footer>
