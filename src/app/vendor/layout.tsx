@@ -1,6 +1,7 @@
 import { LogoutButton } from "@/components/dashboard/logout-button";
 import { Logo } from "@/components/logo";
 import { MainNav, MobileNav } from "@/components/main-nav";
+import { NotificationBell } from "@/components/notification-bell";
 import { VendorNav } from "@/components/vendor/vendor-nav";
 import { getCurrentProfile } from "@/lib/auth/profile";
 import { createClient } from "@/lib/supabase/server";
@@ -27,6 +28,7 @@ export default async function VendorLayout({
           </Link>
           <div className="flex items-center gap-1 sm:gap-2">
             <MainNav />
+            <NotificationBell />
             <LogoutButton />
             <MobileNav />
           </div>

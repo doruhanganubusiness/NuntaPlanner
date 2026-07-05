@@ -278,6 +278,17 @@ export type VendorReferralRow = {
   created_at: string;
 };
 
+export type NotificationRow = {
+  id: string;
+  user_id: string;
+  type: string;
+  title: string;
+  body: string | null;
+  link: string | null;
+  read_at: string | null;
+  created_at: string;
+};
+
 export type SubscriptionRow = {
   id: string;
   vendor_id: string;
@@ -427,6 +438,11 @@ export interface Database {
           referred_vendor_id: string;
         },
         Partial<ReferralRow>
+      >;
+      notifications: TableShape<
+        NotificationRow,
+        Partial<NotificationRow> & { user_id: string; type: string; title: string },
+        Partial<NotificationRow>
       >;
     };
     Views: Record<string, never>;

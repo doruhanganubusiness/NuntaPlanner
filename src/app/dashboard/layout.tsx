@@ -1,6 +1,7 @@
 import { LogoutButton } from "@/components/dashboard/logout-button";
 import { Logo } from "@/components/logo";
 import { MainNav, MobileNav } from "@/components/main-nav";
+import { NotificationBell } from "@/components/notification-bell";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -33,6 +34,7 @@ export default async function DashboardLayout({
           </Link>
           <div className="flex items-center gap-1 sm:gap-2">
             <MainNav />
+            <NotificationBell />
             <LogoutButton />
             <MobileNav />
           </div>
