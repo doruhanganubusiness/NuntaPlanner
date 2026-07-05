@@ -14,6 +14,7 @@ export const SITE_NAV = [
   { href: "/pentru-furnizori", label: "Pentru furnizori" },
   { href: "/furnizori", label: "Director furnizori" },
   { href: "/zone", label: "Zone" },
+  { href: "/blog", label: "Blog" },
 ] as const;
 
 export function MainNav({ className }: { className?: string }) {
