@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  AccountTypeToggle,
+  accountTypeFromParam,
+  type AccountType,
+} from "@/components/auth/account-type-toggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,11 +13,17 @@ import { Logo } from "@/components/logo";
 import { PasswordInput } from "@/components/ui/password-input";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // Contextul (miri/furnizor) vine din `?type=`. Rutarea după login rămâne însă
+  // după tipul REAL al contului (profiles.user_type), nu după comutator.
+  const [accountType, setAccountType] = useState<AccountType>(() =>
+    accountTypeFromParam(searchParams.get("type")),
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +43,7 @@ export default function LoginPage() {
       setLoading(false);
       return;
     }
-    const next = new URLSearchParams(window.location.search).get("next");
+    const next = searchParams.get("next");
     if (next) {
       router.push(next);
     } else {
@@ -59,6 +70,20 @@ export default function LoginPage() {
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
+              <Label>Tip cont</Label>
+              <div className="mt-1">
+                <AccountTypeToggle
+                  value={accountType}
+                  onChange={setAccountType}
+                />
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {accountType === "vendor"
+                  ? "Autentificare furnizor: gestionează-ți lead-urile și abonamentul."
+                  : "Autentificare miri: continuă planificarea nunții."}
+              </p>
+            </div>
+            <div>
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -84,12 +109,23 @@ export default function LoginPage() {
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Nu ai cont?{" "}
-            <Link href="/register" className="text-primary hover:underline">
+            <Link
+              href={`/register?type=${accountType}`}
+              className="text-primary hover:underline"
+            >
               Creează unul
             </Link>
           </p>
         </CardContent>
       </Card>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }

@@ -11,7 +11,8 @@ import { usePathname } from "next/navigation";
  */
 export const SITE_NAV = [
   { href: "/pentru-miri", label: "Pentru miri" },
-  { href: "/furnizori", label: "Furnizori" },
+  { href: "/pentru-furnizori", label: "Pentru furnizori" },
+  { href: "/furnizori", label: "Director furnizori" },
 ] as const;
 
 export function MainNav({ className }: { className?: string }) {

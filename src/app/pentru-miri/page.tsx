@@ -123,8 +123,11 @@ export default function PentruMiriPage() {
         eyebrow="Pentru miri"
         title={TITLE}
         intro="NuntaPlanner adună într-un singur loc bugetul, invitații, programul zilei și calculele — apoi îți generează automat planul complet al nunții."
-        primary={{ href: "/register", label: "Creează-ți planul gratuit" }}
-        secondary={{ href: "/login", label: "Am deja cont" }}
+        primary={{
+          href: "/register?type=client",
+          label: "Creează-ți planul gratuit",
+        }}
+        secondary={{ href: "/login?type=client", label: "Am deja cont" }}
       />
 
       <section className="grid gap-4 sm:grid-cols-3">
@@ -194,8 +197,8 @@ export default function PentruMiriPage() {
       <CtaBand
         title="Gata să-ți planifici nunta?"
         text="Creează-ți contul gratuit și primești în câteva minute planul complet — buget, cantități, sală, muzică și invitație digitală."
-        primary={{ href: "/register", label: "Începe gratuit" }}
-        secondary={{ href: "/login", label: "Autentificare" }}
+        primary={{ href: "/register?type=client", label: "Începe gratuit" }}
+        secondary={{ href: "/login?type=client", label: "Autentificare" }}
       />
     </div>
   );
