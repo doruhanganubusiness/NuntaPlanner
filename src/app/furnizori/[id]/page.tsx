@@ -53,6 +53,16 @@ export default async function VendorDetailPage({
   const v = await getVendor(id);
   if (!v) notFound();
 
+  const supabase = await createClient();
+  const { data: mediaData } = await supabase
+    .from("vendor_media")
+    .select("id, type, url")
+    .eq("vendor_id", v.id)
+    .order("position");
+  const media = mediaData ?? [];
+  const images = media.filter((m) => m.type === "image");
+  const videos = media.filter((m) => m.type === "video");
+
   const pricing = TIER_PRICING[v.tier];
 
   return (
@@ -99,6 +109,39 @@ export default async function VendorDetailPage({
             {v.description}
           </CardContent>
         </Card>
+      )}
+
+      {images.length > 0 && (
+        <section>
+          <h2 className="mb-3 text-lg font-semibold">Galerie foto</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {images.map((m) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={m.id}
+                src={m.url}
+                alt={`${v.business_name} — fotografie`}
+                className="aspect-square w-full rounded-lg border border-border object-cover"
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {videos.length > 0 && (
+        <section>
+          <h2 className="mb-3 text-lg font-semibold">Video</h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {videos.map((m) => (
+              <video
+                key={m.id}
+                src={m.url}
+                controls
+                className="w-full rounded-lg border border-border"
+              />
+            ))}
+          </div>
+        </section>
       )}
 
       <div className="grid gap-4 sm:grid-cols-2">

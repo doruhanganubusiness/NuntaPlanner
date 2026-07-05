@@ -47,6 +47,7 @@ export type PaymentType = "cpl_lead" | "subscription_monthly";
 export type PaymentStatus = "pending" | "succeeded" | "failed" | "refunded";
 export type SubscriptionStatus = "active" | "cancelled" | "paused";
 export type ReviewRole = "vendor" | "couple";
+export type VendorMediaType = "image" | "video";
 
 export type ProfileRow = {
   id: string;
@@ -228,6 +229,16 @@ export type PaymentRow = {
   updated_at: string;
 };
 
+export type VendorMediaRow = {
+  id: string;
+  vendor_id: string;
+  type: VendorMediaType;
+  url: string;
+  title: string | null;
+  position: number;
+  created_at: string;
+};
+
 export type SubscriptionRow = {
   id: string;
   vendor_id: string;
@@ -351,6 +362,15 @@ export interface Database {
           monthly_price: number;
         },
         Partial<SubscriptionRow>
+      >;
+      vendor_media: TableShape<
+        VendorMediaRow,
+        Partial<VendorMediaRow> & {
+          vendor_id: string;
+          type: VendorMediaType;
+          url: string;
+        },
+        Partial<VendorMediaRow>
       >;
     };
     Views: Record<string, never>;
