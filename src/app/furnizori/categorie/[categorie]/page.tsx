@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { VendorCard } from "@/components/vendors/vendor-card";
 import { COUNTIES } from "@/lib/localities/counties";
+import { COUNTIES_SORTED, countySlug, truncate } from "@/lib/localities/geo";
 import { pageMeta } from "@/lib/seo";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -13,21 +14,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-type Params = { slug: string };
+type Params = { categorie: string };
 type SP = { county?: string };
-
-function truncate(s: string, n: number): string {
-  const arr = [...s];
-  return arr.length <= n ? s : arr.slice(0, n - 1).join("") + "…";
-}
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const category = CATEGORY_BY_SLUG.get(slug);
+  const { categorie } = await params;
+  const category = CATEGORY_BY_SLUG.get(categorie);
   if (!category) return { title: "Categorie inexistentă" };
 
   const title = truncate(`${category.label} de nuntă în România`, 59);
@@ -38,7 +34,7 @@ export async function generateMetadata({
   return pageMeta({
     title,
     description,
-    path: `/furnizori/categorie/${slug}`,
+    path: `/furnizori/categorie/${categorie}`,
     keywords: [
       `${category.label} nuntă`,
       `furnizori ${category.label.toLowerCase()}`,
@@ -54,8 +50,8 @@ export default async function CategoryPage({
   params: Promise<Params>;
   searchParams: Promise<SP>;
 }) {
-  const { slug } = await params;
-  const category = CATEGORY_BY_SLUG.get(slug);
+  const { categorie } = await params;
+  const category = CATEGORY_BY_SLUG.get(categorie);
   if (!category) notFound();
 
   const { county } = await searchParams;
@@ -131,6 +127,24 @@ export default async function CategoryPage({
           ))}
         </div>
       )}
+
+      {/* Pagini dedicate per județ — linkuri interne (SEO local). */}
+      <section>
+        <h2 className="text-lg font-semibold">
+          {category.label} pe județ
+        </h2>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {COUNTIES_SORTED.map((c) => (
+            <Link
+              key={c.code}
+              href={`/furnizori/categorie/${category.slug}/${countySlug(c)}`}
+              className="rounded-full border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+            >
+              {c.name}
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <section>
         <h2 className="text-lg font-semibold">Alte categorii de furnizori</h2>
