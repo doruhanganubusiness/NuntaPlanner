@@ -144,6 +144,11 @@ function esc(s: string): string {
     .replace(/>/g, "&gt;");
 }
 
+// Header comun: declarație XML + trimitere la stylesheet-ul XSL (UI în browser).
+const XML_HEAD =
+  '<?xml version="1.0" encoding="UTF-8"?>' +
+  '<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>';
+
 /** Un <urlset> (sitemap copil). */
 export function urlsetXml(entries: UrlEntry[]): string {
   const body = entries
@@ -155,7 +160,7 @@ export function urlsetXml(entries: UrlEntry[]): string {
       return `<url>${parts.join("")}</url>`;
     })
     .join("");
-  return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${body}</urlset>`;
+  return `${XML_HEAD}<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${body}</urlset>`;
 }
 
 /** Indexul centralizator <sitemapindex>. */
@@ -165,5 +170,5 @@ export function indexXml(): string {
     (t) =>
       `<sitemap><loc>${esc(u(`/sitemap/${t}.xml`))}</loc><lastmod>${now}</lastmod></sitemap>`,
   ).join("");
-  return `<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${body}</sitemapindex>`;
+  return `${XML_HEAD}<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${body}</sitemapindex>`;
 }
