@@ -169,6 +169,7 @@ export type VendorRow = {
   verified: boolean;
   status: VendorStatus;
   stripe_connect_id: string | null;
+  referral_code: string;
   created_at: string;
   updated_at: string;
 };
@@ -247,6 +248,26 @@ export type MessageRow = {
   sender_id: string | null;
   body: string;
   read_at: string | null;
+  created_at: string;
+};
+
+export type ReferralRow = {
+  id: string;
+  referrer_vendor_id: string;
+  referred_vendor_id: string;
+  status: "joined" | "rewarded";
+  reward_granted_at: string | null;
+  created_at: string;
+};
+
+/** Forma întoarsă de RPC `vendor_referrals()` — recomandare + date invitat. */
+export type VendorReferralRow = {
+  id: string;
+  referred_business_name: string;
+  referred_status: VendorStatus;
+  referred_verified: boolean;
+  status: "joined" | "rewarded";
+  reward_granted_at: string | null;
   created_at: string;
 };
 
@@ -392,6 +413,14 @@ export interface Database {
         },
         Partial<MessageRow>
       >;
+      referrals: TableShape<
+        ReferralRow,
+        Partial<ReferralRow> & {
+          referrer_vendor_id: string;
+          referred_vendor_id: string;
+        },
+        Partial<ReferralRow>
+      >;
     };
     Views: Record<string, never>;
     Functions: {
@@ -431,6 +460,10 @@ export interface Database {
       set_lead_status: {
         Args: { p_lead_id: string; p_status: LeadStatus };
         Returns: undefined;
+      };
+      vendor_referrals: {
+        Args: Record<string, never>;
+        Returns: VendorReferralRow[];
       };
     };
     Enums: {

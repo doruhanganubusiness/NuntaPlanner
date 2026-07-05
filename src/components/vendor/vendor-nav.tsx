@@ -9,6 +9,7 @@ const items = [
   { href: "/vendor/leads", label: "Lead-uri" },
   { href: "/vendor/galerie", label: "Galerie" },
   { href: "/vendor/subscription", label: "Abonament" },
+  { href: "/vendor/referral", label: "Recomandări" },
   { href: "/vendor/profile", label: "Profil" },
 ];
 

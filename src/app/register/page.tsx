@@ -30,6 +30,10 @@ function RegisterForm() {
   const [needsVerify, setNeedsVerify] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Cod de referral (link primit de la un furnizor partener). Îl salvăm în
+  // metadata contului; legarea la invitator se face la crearea profilului.
+  const referralCode = searchParams.get("ref")?.trim() || null;
+
   const home = accountType === "vendor" ? "/vendor" : "/dashboard";
 
   async function onSubmit(e: React.FormEvent) {
@@ -41,7 +45,11 @@ function RegisterForm() {
       email,
       password,
       options: {
-        data: { full_name: fullName, user_type: accountType },
+        data: {
+          full_name: fullName,
+          user_type: accountType,
+          ...(referralCode ? { referred_by_code: referralCode } : {}),
+        },
         emailRedirectTo:
           typeof window !== "undefined"
             ? `${window.location.origin}${home}`
@@ -96,6 +104,13 @@ function RegisterForm() {
           <CardTitle className="mt-2 text-xl">Creează-ți contul</CardTitle>
         </CardHeader>
         <CardContent>
+          {referralCode && accountType === "vendor" && (
+            <p className="mb-4 rounded-md bg-accent px-3 py-2 text-sm text-accent-foreground">
+              Ai fost invitat de un furnizor partener. Creează-ți contul și
+              listează-te — partenerul tău primește o lună de abonament gratuită
+              după ce ești verificat.
+            </p>
+          )}
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
               <Label>Tip cont</Label>

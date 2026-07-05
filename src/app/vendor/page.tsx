@@ -204,6 +204,21 @@ export default async function VendorOverview() {
           </div>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Recomandă și primești o lună gratuită</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          <p className="text-muted-foreground">
+            Invită alți furnizori pe platformă. Pentru fiecare furnizor adus și
+            verificat, primești o lună de abonament gratuită (maxim 5 pe lună).
+          </p>
+          <Button variant="outline" size="sm" asChild className="mt-1">
+            <Link href="/vendor/referral">Invită furnizori</Link>
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }
