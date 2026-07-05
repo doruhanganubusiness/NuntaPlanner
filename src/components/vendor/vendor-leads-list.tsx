@@ -1,10 +1,11 @@
 "use client";
 
+import { LeadConversation } from "@/components/chat/lead-conversation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api/client";
 import type { LeadStatus, VendorLeadRow } from "@/lib/supabase/database.types";
-import { Lock } from "lucide-react";
+import { Lock, MessageSquare } from "lucide-react";
 import { useState } from "react";
 
 const STATUS_LABEL: Record<LeadStatus, string> = {
@@ -27,6 +28,7 @@ export function VendorLeadsList({
   const [leads, setLeads] = useState(initial);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [chatId, setChatId] = useState<string | null>(null);
 
   async function setStatus(id: string, status: "contacted" | "converted" | "lost") {
     setBusyId(id);
@@ -119,6 +121,16 @@ export function VendorLeadsList({
               <>
                 <span>{l.client_email}</span>
                 {l.client_phone && <span>· {l.client_phone}</span>}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setChatId((c) => (c === l.id ? null : l.id))
+                  }
+                >
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  {chatId === l.id ? "Închide chat" : "Conversație"}
+                </Button>
               </>
             ) : (
               <>
@@ -167,6 +179,12 @@ export function VendorLeadsList({
               Pierdut
             </Button>
           </div>
+
+          {l.is_unlocked_by_vendor && chatId === l.id && (
+            <div className="mt-3">
+              <LeadConversation leadId={l.id} role="vendor" />
+            </div>
+          )}
         </li>
         ))}
       </ul>
