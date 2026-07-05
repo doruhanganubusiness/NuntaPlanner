@@ -18,9 +18,11 @@ const STATUS_LABEL: Record<LeadStatus, string> = {
 export function VendorLeadsList({
   initial,
   unlockPriceRON,
+  hasSubscription = false,
 }: {
   initial: VendorLeadRow[];
   unlockPriceRON: number;
+  hasSubscription?: boolean;
 }) {
   const [leads, setLeads] = useState(initial);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -40,16 +42,36 @@ export function VendorLeadsList({
     setBusyId(id);
     setError(null);
     try {
-      const { url } = await api.post<{ url: string | null }>(
-        `/leads/${id}/unlock`,
-        {},
-      );
-      if (url) {
-        window.location.assign(url);
-      } else {
-        setError("Nu s-a putut porni plata.");
-        setBusyId(null);
+      const res = await api.post<{
+        url: string | null;
+        unlocked?: boolean;
+        contact?: { email: string | null; phone: string | null };
+      }>(`/leads/${id}/unlock`, {});
+      if (res.url) {
+        // Flux CPL: redirect către Stripe Checkout.
+        window.location.assign(res.url);
+        return;
       }
+      if (res.unlocked) {
+        // Abonament activ: deblocare instant, actualizăm rândul local.
+        setLeads((ls) =>
+          ls.map((l) =>
+            l.id === id
+              ? {
+                  ...l,
+                  is_unlocked_by_vendor: true,
+                  status: l.status === "new" ? "unlocked" : l.status,
+                  client_email: res.contact?.email ?? l.client_email,
+                  client_phone: res.contact?.phone ?? l.client_phone,
+                }
+              : l,
+          ),
+        );
+        setBusyId(null);
+        return;
+      }
+      setError("Nu s-a putut debloca contactul.");
+      setBusyId(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Eroare");
       setBusyId(null);
@@ -110,8 +132,10 @@ export function VendorLeadsList({
                   onClick={() => unlock(l.id)}
                 >
                   {busyId === l.id
-                    ? "Se deschide…"
-                    : `Deblochează (${unlockPriceRON} RON)`}
+                    ? "Se deblochează…"
+                    : hasSubscription
+                      ? "Deblochează (inclus în abonament)"
+                      : `Deblochează (${unlockPriceRON} RON)`}
                 </Button>
               </>
             )}

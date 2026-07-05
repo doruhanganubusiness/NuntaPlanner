@@ -5,6 +5,7 @@ import { getCurrentProfile } from "@/lib/auth/profile";
 import { createClient } from "@/lib/supabase/server";
 import type { VendorLeadRow, VendorStatus } from "@/lib/supabase/database.types";
 import { TIER_PRICING, categoryLabel } from "@/lib/vendors/categories";
+import { getActiveSubscription } from "@/lib/vendors/subscription";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -51,6 +52,7 @@ export default async function VendorOverview() {
   const leads = (leadsData ?? []) as VendorLeadRow[];
   const count = (s: string) => leads.filter((l) => l.status === s).length;
 
+  const sub = await getActiveSubscription(supabase, vendor.id);
   const st = STATUS[vendor.status];
   const pricing = TIER_PRICING[vendor.tier];
 
@@ -110,13 +112,27 @@ export default async function VendorOverview() {
             Tier <b>{pricing.label}</b> — {pricing.cplRON} RON per lead deblocat
             sau {pricing.monthlyRON} RON/lună abonament.
           </p>
-          <p className="text-muted-foreground">
-            Vezi cererile primite cu contactul mascat și plătești{" "}
-            {pricing.cplRON} RON per lead ca să dezvălui contactul mirelui.
-          </p>
-          <Button variant="outline" size="sm" asChild className="mt-1">
-            <Link href="/vendor/leads">Vezi lead-urile</Link>
-          </Button>
+          {sub ? (
+            <p className="text-success">
+              Ai abonament activ — deblochezi contactele nelimitat, fără costuri
+              per lead.
+            </p>
+          ) : (
+            <p className="text-muted-foreground">
+              Vezi cererile primite cu contactul mascat și plătești{" "}
+              {pricing.cplRON} RON per lead ca să dezvălui contactul mirelui.
+            </p>
+          )}
+          <div className="mt-1 flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/vendor/leads">Vezi lead-urile</Link>
+            </Button>
+            <Button variant={sub ? "ghost" : "outline"} size="sm" asChild>
+              <Link href="/vendor/subscription">
+                {sub ? "Gestionează abonamentul" : "Activează abonamentul"}
+              </Link>
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

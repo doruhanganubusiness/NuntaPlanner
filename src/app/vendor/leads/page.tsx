@@ -3,6 +3,7 @@ import { getCurrentProfile } from "@/lib/auth/profile";
 import { createClient } from "@/lib/supabase/server";
 import type { VendorLeadRow } from "@/lib/supabase/database.types";
 import { TIER_PRICING } from "@/lib/vendors/categories";
+import { hasActiveSubscription } from "@/lib/vendors/subscription";
 import { redirect } from "next/navigation";
 
 export default async function VendorLeadsPage({
@@ -25,6 +26,7 @@ export default async function VendorLeadsPage({
 
   const { data } = await supabase.rpc("vendor_leads");
   const leads = (data ?? []) as VendorLeadRow[];
+  const subscribed = await hasActiveSubscription(supabase, vendor.id);
 
   return (
     <div className="space-y-4">
@@ -42,9 +44,16 @@ export default async function VendorLeadsPage({
         </div>
       )}
 
+      {subscribed && (
+        <div className="rounded-md bg-primary/10 px-4 py-3 text-sm text-primary">
+          Ai abonament activ — deblochezi contactele fără costuri suplimentare.
+        </div>
+      )}
+
       <VendorLeadsList
         initial={leads}
         unlockPriceRON={TIER_PRICING[vendor.tier].cplRON}
+        hasSubscription={subscribed}
       />
     </div>
   );
