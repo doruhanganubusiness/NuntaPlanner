@@ -1,8 +1,8 @@
 "use client";
 
+import { Combobox, type ComboOption } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
 import { createClient } from "@/lib/supabase/client";
 import { COUNTIES, COUNTY_BY_CODE } from "@/lib/localities/counties";
 import { useEffect, useState } from "react";
@@ -17,31 +17,29 @@ const CUSTOM = "__custom__";
 
 // Județele ordonate alfabetic (colație românească) — București iese între
 // Brăila și Buzău, nu la final.
-const SORTED_COUNTIES = [...COUNTIES].sort((a, b) =>
-  a.name.localeCompare(b.name, "ro"),
-);
+const COUNTY_OPTIONS: ComboOption[] = [...COUNTIES]
+  .sort((a, b) => a.name.localeCompare(b.name, "ro"))
+  .map((c) => ({ value: c.code, label: c.name }));
 
 /**
- * Selector în cascadă: județ → localitate (filtrată după județ), cu opțiunea de a
- * adăuga o localitate care nu e în listă (ex. un sat mic).
+ * Selector în cascadă: județ → localitate (filtrată după județ), ambele cu
+ * casetă de căutare (Combobox). Permite și o localitate scrisă manual.
  */
 export function LocalityPicker({
   value,
   onChange,
+  idPrefix = "",
 }: {
   value: LocalityValue;
   onChange: (v: LocalityValue) => void;
+  idPrefix?: string;
 }) {
   const [localities, setLocalities] = useState<string[]>([]);
-  // Județul pentru care e încărcată lista curentă; „loading” se derivă din el,
-  // fără setState sincron în efect.
   const [loadedCode, setLoadedCode] = useState<string | null>(null);
   const [custom, setCustom] = useState(false);
 
   const loading = !!value.county_code && loadedCode !== value.county_code;
 
-  // Încarcă localitățile când se schimbă județul. Când nu e ales niciun județ,
-  // lista e golită din handler (selectCounty).
   useEffect(() => {
     const code = value.county_code;
     if (!code) return;
@@ -56,7 +54,6 @@ export function LocalityPicker({
         const names = (data ?? []).map((r) => r.name as string);
         setLocalities(names);
         setLoadedCode(code);
-        // Dacă localitatea salvată nu e în listă, trecem pe modul custom.
         if (value.locality && !names.includes(value.locality)) setCustom(true);
       });
     return () => {
@@ -85,30 +82,31 @@ export function LocalityPicker({
     }
   }
 
+  const localityOptions: ComboOption[] = [
+    ...localities.map((n) => ({ value: n, label: n })),
+    { value: CUSTOM, label: "➕ Altă localitate (o adaug eu)" },
+  ];
+
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       <div>
-        <Label htmlFor="county">Județ</Label>
-        <Select
-          id="county"
+        <Label htmlFor={`${idPrefix}county`}>Județ</Label>
+        <Combobox
+          id={`${idPrefix}county`}
           value={value.county_code ?? ""}
-          onChange={(e) => selectCounty(e.target.value)}
-        >
-          <option value="">Alege județul…</option>
-          {SORTED_COUNTIES.map((c) => (
-            <option key={c.code} value={c.code}>
-              {c.name}
-            </option>
-          ))}
-        </Select>
+          onChange={selectCounty}
+          options={COUNTY_OPTIONS}
+          placeholder="Alege județul…"
+          searchPlaceholder="Caută județ…"
+        />
       </div>
 
       <div>
-        <Label htmlFor="locality">Localitate</Label>
+        <Label htmlFor={`${idPrefix}locality`}>Localitate</Label>
         {custom ? (
           <div className="space-y-1">
             <Input
-              id="locality"
+              id={`${idPrefix}locality`}
               placeholder="Scrie localitatea"
               value={value.locality ?? ""}
               onChange={(e) =>
@@ -127,22 +125,15 @@ export function LocalityPicker({
             </button>
           </div>
         ) : (
-          <Select
-            id="locality"
+          <Combobox
+            id={`${idPrefix}locality`}
             value={value.locality ?? ""}
+            onChange={selectLocality}
+            options={localityOptions}
             disabled={!value.county_code || loading}
-            onChange={(e) => selectLocality(e.target.value)}
-          >
-            <option value="">
-              {loading ? "Se încarcă…" : "Alege localitatea…"}
-            </option>
-            {localities.map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-            <option value={CUSTOM}>➕ Altă localitate (o adaug eu)</option>
-          </Select>
+            placeholder={loading ? "Se încarcă…" : "Alege localitatea…"}
+            searchPlaceholder="Caută localitate…"
+          />
         )}
       </div>
     </div>

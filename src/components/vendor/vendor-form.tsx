@@ -41,8 +41,18 @@ export function VendorForm({
   const [uploading, setUploading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [regionQuery, setRegionQuery] = useState("");
 
   const tier = category ? tierForCategory(category) : null;
+
+  const norm = (s: string) =>
+    s
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .toLowerCase();
+  const filteredCounties = regionQuery
+    ? COUNTIES.filter((c) => norm(c.name).includes(norm(regionQuery)))
+    : COUNTIES;
 
   function toggleRegion(name: string) {
     setRegions((r) =>
@@ -138,9 +148,20 @@ export function VendorForm({
 
       <div>
         <Label>Regiuni acoperite</Label>
-        <div className="mt-1 max-h-52 overflow-y-auto rounded-md border border-border p-3">
+        <Input
+          value={regionQuery}
+          onChange={(e) => setRegionQuery(e.target.value)}
+          placeholder="Caută județ…"
+          className="mt-1"
+        />
+        <div className="mt-2 max-h-52 overflow-y-auto rounded-md border border-border p-3">
           <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-3">
-            {COUNTIES.map((c) => (
+            {filteredCounties.length === 0 && (
+              <p className="col-span-full text-sm text-muted-foreground">
+                Niciun județ găsit.
+              </p>
+            )}
+            {filteredCounties.map((c) => (
               <label key={c.code} className="flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
