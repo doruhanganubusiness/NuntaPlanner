@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
   LocalityPicker,
@@ -144,18 +144,17 @@ export function VendorForm({
 
       <div>
         <Label htmlFor="category">Categorie</Label>
-        <Select
+        <Combobox
           id="category"
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        >
-          <option value="">Alege categoria…</option>
-          {VENDOR_CATEGORIES_SORTED.map((c) => (
-            <option key={c.slug} value={c.slug}>
-              {c.label}
-            </option>
-          ))}
-        </Select>
+          onChange={setCategory}
+          options={VENDOR_CATEGORIES_SORTED.map((c) => ({
+            value: c.slug,
+            label: c.label,
+          }))}
+          placeholder="Alege categoria…"
+          searchPlaceholder="Caută categorie…"
+        />
         {tier && (
           <p className="mt-1 text-xs text-muted-foreground">
             Tier {TIER_PRICING[tier].label}: {TIER_PRICING[tier].cplRON} RON/lead

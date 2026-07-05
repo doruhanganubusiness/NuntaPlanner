@@ -1,7 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
 import { VendorCard } from "@/components/vendors/vendor-card";
-import { COUNTIES } from "@/lib/localities/counties";
+import { VendorFilters } from "@/components/vendors/vendor-filters";
 import { COUNTIES_SORTED, countySlug, truncate } from "@/lib/localities/geo";
 import { pageMeta } from "@/lib/seo";
 import { createClient } from "@/lib/supabase/server";
@@ -88,31 +86,12 @@ export default async function CategoryPage({
         </p>
       </section>
 
-      {/* Filtru județ — GET form, fără JS, prietenos SEO. */}
-      <form
-        method="get"
-        className="flex flex-wrap items-end gap-3 rounded-lg border border-border bg-card p-4"
-      >
-        <div className="min-w-48">
-          <label className="mb-1 block text-sm font-medium">Județ</label>
-          <Select name="county" defaultValue={county ?? ""}>
-            <option value="">Toate județele</option>
-            {COUNTIES.map((c) => (
-              <option key={c.code} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-          </Select>
-        </div>
-        <Button type="submit">Filtrează</Button>
-        {county && (
-          <Button variant="ghost" asChild>
-            <Link href={`/furnizori/categorie/${category.slug}`}>
-              Resetează
-            </Link>
-          </Button>
-        )}
-      </form>
+      {/* Filtru județ căutabil. */}
+      <VendorFilters
+        basePath={`/furnizori/categorie/${category.slug}`}
+        county={county}
+        showCategory={false}
+      />
 
       {list.length === 0 ? (
         <p className="text-sm text-muted-foreground">

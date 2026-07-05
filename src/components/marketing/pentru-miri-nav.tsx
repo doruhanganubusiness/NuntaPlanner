@@ -1,20 +1,11 @@
 "use client";
 
+import { PENTRU_MIRI_PAGES } from "@/lib/marketing/pentru-miri-pages";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-/** Paginile secțiunii „Pentru miri” — pagina umbrelă + o subpagină per TAB. */
-export const PENTRU_MIRI_PAGES = [
-  { href: "/pentru-miri", label: "Prezentare" },
-  { href: "/pentru-miri/panou-general", label: "Panou general" },
-  { href: "/pentru-miri/detalii", label: "Detalii" },
-  { href: "/pentru-miri/evenimente", label: "Evenimente" },
-  { href: "/pentru-miri/buget", label: "Buget" },
-  { href: "/pentru-miri/plan", label: "Plan" },
-  { href: "/pentru-miri/invitatie", label: "Invitație" },
-  { href: "/pentru-miri/membri", label: "Membri" },
-] as const;
+export { PENTRU_MIRI_PAGES };
 
 export function PentruMiriNav() {
   const pathname = usePathname();

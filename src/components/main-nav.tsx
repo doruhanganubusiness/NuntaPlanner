@@ -1,75 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { BLOG_CATEGORIES } from "@/lib/blog/wordpress";
-import { COUNTIES_SORTED, countySlug } from "@/lib/localities/geo";
-import { PENTRU_MIRI_PAGES } from "@/components/marketing/pentru-miri-nav";
-import { VENDOR_CATEGORIES_SORTED } from "@/lib/vendors/categories";
+import { NAV_TREE, flattenChildren, isActive } from "@/lib/site-nav";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
-/** Un nod din arborele de navigație; poate avea subpagini (recursiv). */
-export type NavNode = {
-  href: string;
-  label: string;
-  children?: NavNode[];
-};
-
-/**
- * Meniul principal al site-ului, ca arbore: fiecare pagină-părinte listează
- * subpaginile ei (mega-menu pe desktop/tabletă, acordeon cu căutare pe mobil).
- * Sursele de date sunt constantele existente, ca meniul să rămână sincron cu rutele.
- */
-export const NAV_TREE: NavNode[] = [
-  {
-    href: "/pentru-miri",
-    label: "Pentru miri",
-    children: PENTRU_MIRI_PAGES.filter((p) => p.href !== "/pentru-miri").map(
-      (p) => ({ href: p.href, label: p.label }),
-    ),
-  },
-  { href: "/pentru-furnizori", label: "Pentru furnizori" },
-  {
-    href: "/furnizori",
-    label: "Director furnizori",
-    children: VENDOR_CATEGORIES_SORTED.map((c) => ({
-      href: `/furnizori/categorie/${c.slug}`,
-      label: c.label,
-    })),
-  },
-  {
-    href: "/zone",
-    label: "Zone",
-    children: COUNTIES_SORTED.map((c) => ({
-      href: `/zone/${countySlug(c)}`,
-      label: c.name,
-    })),
-  },
-  {
-    href: "/blog",
-    label: "Blog",
-    children: BLOG_CATEGORIES.map((c) => ({
-      href: `/blog/categorie/${c.slug}`,
-      label: c.name,
-    })),
-  },
-];
-
-function isActive(pathname: string, href: string): boolean {
-  return pathname === href || pathname.startsWith(`${href}/`);
-}
-
-/** Aplatizează subpaginile (copii + nepoți) cu adâncime, pentru căutare/afișare. */
-function flattenChildren(node: NavNode, depth = 1): { node: NavNode; depth: number }[] {
-  const out: { node: NavNode; depth: number }[] = [];
-  for (const c of node.children ?? []) {
-    out.push({ node: c, depth });
-    if (c.children?.length) out.push(...flattenChildren(c, depth + 1));
-  }
-  return out;
-}
 
 function normalize(s: string): string {
   return s
@@ -280,10 +216,14 @@ export function MobileNav({ className }: { className?: string }) {
                 const on = isActive(pathname, parent.href);
                 const isOpen = expanded === parent.href;
                 const kids = parent.children ? flattenChildren(parent) : [];
+                // Caseta de căutare doar la listele lungi (Director furnizori, Zone).
+                const showSearch =
+                  parent.href === "/furnizori" || parent.href === "/zone";
                 const q = normalize(query.trim());
-                const filtered = q
-                  ? kids.filter((k) => normalize(k.node.label).includes(q))
-                  : kids;
+                const filtered =
+                  showSearch && q
+                    ? kids.filter((k) => normalize(k.node.label).includes(q))
+                    : kids;
                 return (
                   <li key={parent.href}>
                     {/* Rând PĂRINTE — contrastant, bold */}
@@ -326,19 +266,21 @@ export function MobileNav({ className }: { className?: string }) {
                       )}
                     </div>
 
-                    {/* Subpagini — casetă cu căutare, vizual distinctă (copil) */}
+                    {/* Subpagini — vizual distincte (copil); căutare doar la listele lungi */}
                     {isOpen && parent.children && (
                       <div className="bg-card px-2 py-2">
-                        <div className="relative mb-2">
-                          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                          <input
-                            autoFocus
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            placeholder={`Caută în ${parent.label}…`}
-                            className="h-9 w-full rounded-md border border-input bg-background pl-8 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                          />
-                        </div>
+                        {showSearch && (
+                          <div className="relative mb-2">
+                            <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <input
+                              autoFocus
+                              value={query}
+                              onChange={(e) => setQuery(e.target.value)}
+                              placeholder={`Caută în ${parent.label}…`}
+                              className="h-9 w-full rounded-md border border-input bg-background pl-8 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            />
+                          </div>
+                        )}
                         <ul className="max-h-64 overflow-y-auto">
                           {filtered.length === 0 && (
                             <li className="px-2 py-1.5 text-sm text-muted-foreground">

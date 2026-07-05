@@ -2,8 +2,8 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/api/client";
 import { categoryLabel } from "@/lib/vendors/categories";
@@ -78,14 +78,19 @@ export function VendorBrowse({
   return (
     <div className="space-y-4">
       <div className="max-w-xs">
-        <Select value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value="">Toate categoriile</option>
-          {categoriesPresent.map((c) => (
-            <option key={c} value={c}>
-              {categoryLabel(c)}
-            </option>
-          ))}
-        </Select>
+        <Combobox
+          value={category}
+          onChange={setCategory}
+          options={[
+            { value: "", label: "Toate categoriile" },
+            ...categoriesPresent.map((c) => ({
+              value: c,
+              label: categoryLabel(c),
+            })),
+          ]}
+          placeholder="Toate categoriile"
+          searchPlaceholder="Caută categorie…"
+        />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

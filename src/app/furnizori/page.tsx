@@ -1,7 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
 import { VendorCard } from "@/components/vendors/vendor-card";
-import { COUNTIES } from "@/lib/localities/counties";
+import { VendorFilters } from "@/components/vendors/vendor-filters";
 import { pageMeta } from "@/lib/seo";
 import { createClient } from "@/lib/supabase/server";
 import { VENDOR_CATEGORIES_SORTED } from "@/lib/vendors/categories";
@@ -69,40 +67,8 @@ export default async function FurnizoriPage({
         </div>
       </section>
 
-      {/* Filtre — GET form, fără JS, prietenos SEO. */}
-      <form
-        method="get"
-        className="flex flex-wrap items-end gap-3 rounded-lg border border-border bg-card p-4"
-      >
-        <div className="min-w-48">
-          <label className="mb-1 block text-sm font-medium">Categorie</label>
-          <Select name="category" defaultValue={category ?? ""}>
-            <option value="">Toate categoriile</option>
-            {VENDOR_CATEGORIES_SORTED.map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {c.label}
-              </option>
-            ))}
-          </Select>
-        </div>
-        <div className="min-w-48">
-          <label className="mb-1 block text-sm font-medium">Județ</label>
-          <Select name="county" defaultValue={county ?? ""}>
-            <option value="">Toate județele</option>
-            {COUNTIES.map((c) => (
-              <option key={c.code} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-          </Select>
-        </div>
-        <Button type="submit">Filtrează</Button>
-        {(category || county) && (
-          <Button variant="ghost" asChild>
-            <Link href="/furnizori">Resetează</Link>
-          </Button>
-        )}
-      </form>
+      {/* Filtre căutabile (categorie + județ). */}
+      <VendorFilters basePath="/furnizori" category={category} county={county} />
 
       {list.length === 0 ? (
         <p className="text-sm text-muted-foreground">
