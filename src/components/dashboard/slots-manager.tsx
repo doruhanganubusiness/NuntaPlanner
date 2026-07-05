@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { LocalityPicker } from "@/components/dashboard/locality-picker";
 import { api } from "@/lib/api/client";
 import type { EventSlotRow, SlotTypeDb } from "@/lib/supabase/database.types";
 import { SLOT_TYPE_OPTIONS, slotDefaults } from "@/lib/wedding/labels";
@@ -114,6 +115,9 @@ function SlotCard({
         duration_minutes: slot.duration_minutes,
         location_name: slot.location_name ?? null,
         location_address: slot.location_address ?? null,
+        county_code: slot.county_code ?? null,
+        county: slot.county ?? null,
+        locality: slot.locality ?? null,
         guests_adults: slot.guests_adults,
         guests_children: slot.guests_children,
         serves_alcohol: slot.serves_alcohol,
@@ -247,6 +251,28 @@ function SlotCard({
             placeholder="ex. Str. Bisericii nr. 12, Cluj-Napoca"
             onChange={(e) => onLocalChange({ location_address: e.target.value })}
           />
+        </div>
+        <div>
+          <Label className="mb-1 block">Unde are loc (județ / localitate)</Label>
+          <LocalityPicker
+            idPrefix={`slot-${slot.id}-`}
+            value={{
+              county_code: slot.county_code ?? null,
+              county: slot.county ?? null,
+              locality: slot.locality ?? null,
+            }}
+            onChange={(v) =>
+              onLocalChange({
+                county_code: v.county_code,
+                county: v.county,
+                locality: v.locality,
+              })
+            }
+          />
+          <p className="mt-1 text-xs text-muted-foreground">
+            Folosim locațiile evenimentelor ca să-ți recomandăm furnizori din
+            zonă (și din județele apropiate).
+          </p>
         </div>
 
         <div className="flex flex-wrap gap-4">

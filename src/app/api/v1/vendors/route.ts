@@ -54,6 +54,9 @@ export async function POST(req: Request) {
       email: d.email ?? user.email ?? null,
       website: d.website ?? null,
       logo_url: d.logo_url ?? null,
+      county_code: d.county_code ?? null,
+      county: d.county ?? null,
+      locality: d.locality ?? null,
     })
     .select("*")
     .single();

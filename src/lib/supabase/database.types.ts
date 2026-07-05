@@ -108,6 +108,9 @@ export type EventSlotRow = {
   duration_minutes: number | null;
   location_name: string | null;
   location_address: string | null;
+  county_code: string | null;
+  county: string | null;
+  locality: string | null;
   guests_adults: number;
   guests_children: number;
   serves_alcohol: boolean;
@@ -170,6 +173,9 @@ export type VendorRow = {
   status: VendorStatus;
   stripe_connect_id: string | null;
   referral_code: string;
+  county_code: string | null;
+  county: string | null;
+  locality: string | null;
   created_at: string;
   updated_at: string;
 };

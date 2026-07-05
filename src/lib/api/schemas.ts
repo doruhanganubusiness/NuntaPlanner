@@ -106,6 +106,9 @@ export const createSlotSchema = z.object({
   duration_minutes: z.number().int().nonnegative().nullable().optional(),
   location_name: z.string().nullable().optional(),
   location_address: z.string().nullable().optional(),
+  county_code: z.string().nullable().optional(),
+  county: z.string().nullable().optional(),
+  locality: z.string().nullable().optional(),
   guests_adults: z.number().int().nonnegative().optional(),
   guests_children: z.number().int().nonnegative().optional(),
   serves_alcohol: z.boolean().optional(),
@@ -125,6 +128,9 @@ export const createVendorSchema = z.object({
   email: z.email().nullable().optional(),
   website: z.string().max(200).nullable().optional(),
   logo_url: z.string().max(500).nullable().optional(),
+  county_code: z.string().nullable().optional(),
+  county: z.string().nullable().optional(),
+  locality: z.string().nullable().optional(),
 });
 
 export const updateVendorSchema = createVendorSchema.partial();

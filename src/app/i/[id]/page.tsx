@@ -55,7 +55,10 @@ function Ornament() {
 function SlotBlock({ slot }: { slot: EventSlotRow }) {
   const title = slot.title || slotTypeLabel(slot.slot_type);
   const time = slot.slot_time ? slot.slot_time.slice(0, 5) : null;
-  const mapsQuery = [slot.location_name, slot.location_address]
+  const place = [slot.locality, slot.county]
+    .filter(Boolean)
+    .join(", ");
+  const mapsQuery = [slot.location_name, slot.location_address, place]
     .filter(Boolean)
     .join(", ");
   const q = encodeURIComponent(mapsQuery);
@@ -73,6 +76,9 @@ function SlotBlock({ slot }: { slot: EventSlotRow }) {
         <p className="text-sm text-[var(--muted-foreground)]">
           {slot.location_address}
         </p>
+      )}
+      {place && (
+        <p className="text-sm text-[var(--muted-foreground)]">{place}</p>
       )}
       {mapsQuery && (
         <div className="mt-2 flex flex-wrap gap-4">

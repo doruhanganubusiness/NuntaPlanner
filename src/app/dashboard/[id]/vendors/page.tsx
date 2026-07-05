@@ -8,6 +8,7 @@ import {
   type BrowseVendor,
 } from "@/components/dashboard/vendor-browse";
 import { createClient } from "@/lib/supabase/server";
+import { nearbyCountyNames } from "@/lib/localities/adjacency";
 import type { LeadStatus } from "@/lib/supabase/database.types";
 
 type SentLead = {
@@ -31,7 +32,22 @@ export default async function VendorsPage({
     .select("county, region")
     .eq("id", id)
     .maybeSingle();
-  const region = wedding?.county ?? wedding?.region ?? null;
+
+  // Locațiile evenimentelor: județele unde au loc sloturile nunții. Dacă lipsesc,
+  // cădem pe județul/regiunea nunții. Recomandăm furnizori din aceste județe ȘI
+  // din cele apropiate (vecine).
+  const { data: slotRows } = await supabase
+    .from("event_slots")
+    .select("county")
+    .eq("wedding_id", id);
+  const slotCounties = (slotRows ?? [])
+    .map((r) => r.county)
+    .filter((c): c is string => !!c);
+  const baseCounties = slotCounties.length
+    ? slotCounties
+    : [wedding?.county ?? wedding?.region].filter((c): c is string => !!c);
+  const eventCounties = [...new Set(baseCounties)];
+  const searchCounties = nearbyCountyNames(eventCounties);
 
   let vq = supabase
     .from("vendors")
@@ -39,7 +55,7 @@ export default async function VendorsPage({
     .eq("status", "active")
     .eq("verified", true)
     .order("rating", { ascending: false });
-  if (region) vq = vq.contains("regions", [region]);
+  if (searchCounties.length) vq = vq.overlaps("regions", searchCounties);
   const { data: vendors } = await vq;
 
   const { data: leadsData } = await supabase
@@ -55,9 +71,9 @@ export default async function VendorsPage({
       <div>
         <h2 className="text-lg font-semibold">Furnizori recomandați</h2>
         <p className="text-sm text-muted-foreground">
-          {region
-            ? `Furnizori activi din regiunea ${region}. Contactează-i direct — e gratuit pentru tine.`
-            : "Adaugă regiunea nunții în Detalii ca să vezi furnizori potriviți."}
+          {eventCounties.length
+            ? `Furnizori activi din ${eventCounties.join(", ")} și județele apropiate, potrivit locațiilor evenimentelor tale. Contactează-i direct — e gratuit.`
+            : "Adaugă județul evenimentelor la Evenimente (sau regiunea nunții în Detalii) ca să vezi furnizori potriviți."}
         </p>
       </div>
 

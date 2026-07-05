@@ -206,6 +206,16 @@ export default async function VendorDetailPage({
             </p>
           </CardContent>
         </Card>
+        {(v.locality || v.county) && (
+          <Card>
+            <CardContent className="pt-6">
+              <p className="text-sm font-medium">Localizare</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {[v.locality, v.county].filter(Boolean).join(", ")}
+              </p>
+            </CardContent>
+          </Card>
+        )}
         {v.website && (
           <Card>
             <CardContent className="pt-6">

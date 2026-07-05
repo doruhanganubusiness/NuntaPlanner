@@ -5,6 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  LocalityPicker,
+  type LocalityValue,
+} from "@/components/dashboard/locality-picker";
 import { api } from "@/lib/api/client";
 import { COUNTIES } from "@/lib/localities/counties";
 import { createClient } from "@/lib/supabase/client";
@@ -37,6 +41,11 @@ export function VendorForm({
   const [email, setEmail] = useState(initial?.email ?? defaultEmail ?? "");
   const [website, setWebsite] = useState(initial?.website ?? "");
   const [logoUrl, setLogoUrl] = useState<string | null>(initial?.logo_url ?? null);
+  const [address, setAddress] = useState<LocalityValue>({
+    county_code: initial?.county_code ?? null,
+    county: initial?.county ?? null,
+    locality: initial?.locality ?? null,
+  });
 
   const [uploading, setUploading] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -97,6 +106,9 @@ export function VendorForm({
       email: email || null,
       website: website || null,
       logo_url: logoUrl,
+      county_code: address.county_code,
+      county: address.county,
+      locality: address.locality,
     };
     try {
       if (isEdit) {
@@ -179,6 +191,19 @@ export function VendorForm({
             {regions.length} regiuni selectate.
           </p>
         )}
+      </div>
+
+      <div>
+        <Label className="mb-1 block">Adresa ta (județ / localitate)</Label>
+        <LocalityPicker
+          idPrefix="vendor-addr-"
+          value={address}
+          onChange={setAddress}
+        />
+        <p className="mt-1 text-xs text-muted-foreground">
+          Unde ești localizat — apare pe profilul tău și ajută mirii să știe cât
+          de aproape ești.
+        </p>
       </div>
 
       <div>
