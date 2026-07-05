@@ -1,6 +1,7 @@
 import { requireUser } from "@/lib/api/http";
 import { getStripe } from "@/lib/stripe/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notifyVendorLeadReceipt } from "@/lib/email/notifications";
 import { TIER_PRICING } from "@/lib/vendors/categories";
 import { NextResponse } from "next/server";
 
@@ -71,6 +72,13 @@ export async function GET(req: Request) {
     stripe_payment_intent_id: paymentIntentId,
     status: "succeeded",
   });
+
+  // Chitanță email (best-effort).
+  try {
+    await notifyVendorLeadReceipt(meta.vendor_id, TIER_PRICING[vendor.tier].cplRON);
+  } catch {
+    // ignorat intenționat
+  }
 
   return NextResponse.redirect(`${leadsUrl}?unlocked=1`);
 }

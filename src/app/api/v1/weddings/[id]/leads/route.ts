@@ -1,5 +1,6 @@
 import { fail, ok, readJson, requireUser } from "@/lib/api/http";
 import { createLeadSchema } from "@/lib/api/schemas";
+import { notifyVendorNewLead } from "@/lib/email/notifications";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -40,5 +41,16 @@ export async function POST(req: Request, { params }: Ctx) {
   });
 
   if (error) return fail(error.message, 400);
+
+  // Notificare email furnizor (best-effort — nu blochează crearea lead-ului).
+  try {
+    await notifyVendorNewLead(parsed.data.vendor_id, {
+      region: data?.event_region ?? null,
+      message: parsed.data.message ?? null,
+    });
+  } catch {
+    // ignorat intenționat
+  }
+
   return ok({ lead: data }, 201);
 }
