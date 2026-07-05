@@ -1,20 +1,14 @@
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  CoupleConversations,
+  type CoupleLead,
+} from "@/components/dashboard/couple-conversations";
 import {
   VendorBrowse,
   type BrowseVendor,
 } from "@/components/dashboard/vendor-browse";
 import { createClient } from "@/lib/supabase/server";
 import type { LeadStatus } from "@/lib/supabase/database.types";
-import { categoryLabel } from "@/lib/vendors/categories";
-
-const STATUS_LABEL: Record<LeadStatus, string> = {
-  new: "Trimisă",
-  unlocked: "Deblocată",
-  contacted: "Contactat",
-  converted: "Convertit",
-  lost: "Pierdut",
-};
 
 type SentLead = {
   id: string;
@@ -73,24 +67,20 @@ export default async function VendorsPage({
             <CardTitle>Cererile tale</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="divide-y divide-border">
-              {sentLeads.map((l) => (
-                <li
-                  key={l.id}
-                  className="flex items-center justify-between py-2 text-sm"
-                >
-                  <span>
-                    {l.vendors?.business_name ?? "Furnizor"}
-                    <span className="text-muted-foreground">
-                      {l.vendors ? ` · ${categoryLabel(l.vendors.category)}` : ""}
-                    </span>
-                  </span>
-                  <Badge tone={l.status === "converted" ? "success" : "muted"}>
-                    {STATUS_LABEL[l.status]}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
+            <p className="mb-3 text-sm text-muted-foreground">
+              Scrie-le direct furnizorilor. Ei îți văd mesajele după ce îți
+              deblochează cererea.
+            </p>
+            <CoupleConversations
+              leads={sentLeads.map(
+                (l): CoupleLead => ({
+                  id: l.id,
+                  status: l.status,
+                  vendorName: l.vendors?.business_name ?? "Furnizor",
+                  category: l.vendors?.category ?? null,
+                }),
+              )}
+            />
           </CardContent>
         </Card>
       )}
