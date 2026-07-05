@@ -56,8 +56,9 @@ function RegisterForm() {
           full_name: fullName,
           user_type: accountType,
           ...(accountType === "vendor"
-            ? { business_name: businessName.trim(), phone: phone.trim() }
+            ? { business_name: businessName.trim() }
             : {}),
+          ...(phone.trim() ? { phone: phone.trim() } : {}),
           ...(referralCode ? { referred_by_code: referralCode } : {}),
         },
         emailRedirectTo:
@@ -157,17 +158,18 @@ function RegisterForm() {
                 onChange={(e) => setFullName(e.target.value)}
               />
             </div>
-            {accountType === "vendor" && (
-              <div>
-                <Label htmlFor="phone">Telefon</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
-            )}
+            <div>
+              <Label htmlFor="phone">
+                Telefon de contact
+                {accountType === "vendor" ? "" : " (opțional)"}
+              </Label>
+              <Input
+                id="phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
             <div>
               <Label htmlFor="email">Email</Label>
               <Input

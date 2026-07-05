@@ -26,7 +26,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-full flex-col">
-      <header className="border-b border-border bg-card">
+      <header className="sticky top-0 z-40 border-b border-border bg-card">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           <Link href="/dashboard">
             <Logo />

@@ -26,16 +26,18 @@ export function VendorBrowse({
   weddingId,
   vendors,
   contactedIds,
+  defaultPhone = "",
 }: {
   weddingId: string;
   vendors: BrowseVendor[];
   contactedIds: string[];
+  defaultPhone?: string;
 }) {
   const router = useRouter();
   const [category, setCategory] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState(defaultPhone);
   const [busy, setBusy] = useState(false);
   const [contacted, setContacted] = useState<string[]>(contactedIds);
   const [error, setError] = useState<string | null>(null);
@@ -57,7 +59,7 @@ export function VendorBrowse({
       setContacted((c) => [...c, vendorId]);
       setOpenId(null);
       setMessage("");
-      setPhone("");
+      setPhone(defaultPhone);
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Eroare");

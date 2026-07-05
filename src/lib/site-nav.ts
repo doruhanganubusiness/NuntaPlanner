@@ -1,6 +1,5 @@
 import { BLOG_CATEGORIES } from "@/lib/blog/wordpress";
 import { COUNTIES_SORTED, countySlug } from "@/lib/localities/geo";
-import { PENTRU_MIRI_PAGES } from "@/lib/marketing/pentru-miri-pages";
 import { VENDOR_CATEGORIES_SORTED } from "@/lib/vendors/categories";
 
 /** Un nod din arborele de navigație; poate avea subpagini (recursiv). */
@@ -17,13 +16,9 @@ export type NavNode = {
  * constantele existente, deci meniul rămâne sincron cu rutele.
  */
 export const NAV_TREE: NavNode[] = [
-  {
-    href: "/pentru-miri",
-    label: "Pentru miri",
-    children: PENTRU_MIRI_PAGES.filter((p) => p.href !== "/pentru-miri").map(
-      (p) => ({ href: p.href, label: p.label }),
-    ),
-  },
+  // „Pentru miri" e link simplu în meniu (subpaginile rămân doar în sub-nav-ul
+  // secțiunii, PentruMiriNav, nu în meniul principal).
+  { href: "/pentru-miri", label: "Pentru miri" },
   { href: "/pentru-furnizori", label: "Pentru furnizori" },
   {
     href: "/furnizori",

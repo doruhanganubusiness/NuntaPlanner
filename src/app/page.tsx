@@ -46,12 +46,14 @@ const steps = [
 export default function Home() {
   return (
     <main className="flex-1">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-        <Logo />
-        <div className="flex items-center gap-1 sm:gap-2">
-          <MainNav />
-          <HeaderAuthNav />
-          <MobileNav />
+      <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <Logo />
+          <div className="flex items-center gap-1 sm:gap-2">
+            <MainNav />
+            <HeaderAuthNav />
+            <MobileNav />
+          </div>
         </div>
       </header>
 
