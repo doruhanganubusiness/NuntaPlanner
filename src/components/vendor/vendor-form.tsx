@@ -24,20 +24,26 @@ import { useState } from "react";
 export function VendorForm({
   userId,
   defaultEmail,
+  defaultBusinessName,
+  defaultPhone,
   initial,
 }: {
   userId: string;
   defaultEmail: string | null;
+  defaultBusinessName?: string | null;
+  defaultPhone?: string | null;
   initial?: VendorRow;
 }) {
   const router = useRouter();
   const isEdit = !!initial;
 
-  const [businessName, setBusinessName] = useState(initial?.business_name ?? "");
+  const [businessName, setBusinessName] = useState(
+    initial?.business_name ?? defaultBusinessName ?? "",
+  );
   const [category, setCategory] = useState(initial?.category ?? "");
   const [regions, setRegions] = useState<string[]>(initial?.regions ?? []);
   const [description, setDescription] = useState(initial?.description ?? "");
-  const [phone, setPhone] = useState(initial?.phone ?? "");
+  const [phone, setPhone] = useState(initial?.phone ?? defaultPhone ?? "");
   const [email, setEmail] = useState(initial?.email ?? defaultEmail ?? "");
   const [website, setWebsite] = useState(initial?.website ?? "");
   const [logoUrl, setLogoUrl] = useState<string | null>(initial?.logo_url ?? null);

@@ -17,6 +17,15 @@ export default async function VendorOnboardingPage() {
     .maybeSingle();
   if (vendor) redirect("/vendor");
 
+  // Denumirea + telefonul completate la înregistrare (metadata cont) precompletează.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const meta = (user?.user_metadata ?? {}) as {
+    business_name?: string;
+    phone?: string;
+  };
+
   return (
     <div className="space-y-4">
       <div>
@@ -28,7 +37,12 @@ export default async function VendorOnboardingPage() {
       </div>
       <Card>
         <CardContent className="pt-6">
-          <VendorForm userId={profile.id} defaultEmail={profile.email} />
+          <VendorForm
+            userId={profile.id}
+            defaultEmail={profile.email}
+            defaultBusinessName={meta.business_name ?? null}
+            defaultPhone={meta.phone ?? null}
+          />
         </CardContent>
       </Card>
     </div>

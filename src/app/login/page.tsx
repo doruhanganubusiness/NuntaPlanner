@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Logo } from "@/components/logo";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 import { PasswordInput } from "@/components/ui/password-input";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
@@ -62,10 +63,7 @@ function LoginForm() {
     <main className="flex flex-1 items-center justify-center px-6 py-12">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <Link href="/">
-            <Logo />
-          </Link>
-          <CardTitle className="mt-2 text-xl">Bine ai revenit</CardTitle>
+          <CardTitle className="text-xl">Bine ai revenit</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-4">
@@ -124,8 +122,12 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense>
-      <LoginForm />
-    </Suspense>
+    <>
+      <SiteHeader />
+      <Suspense>
+        <LoginForm />
+      </Suspense>
+      <SiteFooter />
+    </>
   );
 }

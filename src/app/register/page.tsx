@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Logo } from "@/components/logo";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 import { PasswordInput } from "@/components/ui/password-input";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
@@ -24,6 +25,8 @@ function RegisterForm() {
     accountTypeFromParam(searchParams.get("type")),
   );
   const [fullName, setFullName] = useState("");
+  const [businessName, setBusinessName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -38,6 +41,10 @@ function RegisterForm() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (accountType === "vendor" && !businessName.trim()) {
+      setError("Completează denumirea furnizorului.");
+      return;
+    }
     setLoading(true);
     setError(null);
     const supabase = createClient();
@@ -48,6 +55,9 @@ function RegisterForm() {
         data: {
           full_name: fullName,
           user_type: accountType,
+          ...(accountType === "vendor"
+            ? { business_name: businessName.trim(), phone: phone.trim() }
+            : {}),
           ...(referralCode ? { referred_by_code: referralCode } : {}),
         },
         emailRedirectTo:
@@ -98,10 +108,7 @@ function RegisterForm() {
     <main className="flex flex-1 items-center justify-center px-6 py-12">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <Link href="/">
-            <Logo />
-          </Link>
-          <CardTitle className="mt-2 text-xl">Creează-ți contul</CardTitle>
+          <CardTitle className="text-xl">Creează-ți contul</CardTitle>
         </CardHeader>
         <CardContent>
           {referralCode && accountType === "vendor" && (
@@ -127,6 +134,18 @@ function RegisterForm() {
               </p>
             </div>
 
+            {accountType === "vendor" && (
+              <div>
+                <Label htmlFor="business_name">Denumire furnizor</Label>
+                <Input
+                  id="business_name"
+                  required
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  placeholder="ex. Studio Foto Lumina"
+                />
+              </div>
+            )}
             <div>
               <Label htmlFor="full_name">
                 {accountType === "vendor" ? "Persoană de contact" : "Nume complet"}
@@ -138,6 +157,17 @@ function RegisterForm() {
                 onChange={(e) => setFullName(e.target.value)}
               />
             </div>
+            {accountType === "vendor" && (
+              <div>
+                <Label htmlFor="phone">Telefon</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </div>
+            )}
             <div>
               <Label htmlFor="email">Email</Label>
               <Input
@@ -180,8 +210,12 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Suspense>
-      <RegisterForm />
-    </Suspense>
+    <>
+      <SiteHeader />
+      <Suspense>
+        <RegisterForm />
+      </Suspense>
+      <SiteFooter />
+    </>
   );
 }
