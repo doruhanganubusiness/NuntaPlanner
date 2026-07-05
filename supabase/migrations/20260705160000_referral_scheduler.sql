@@ -115,7 +115,10 @@ grant execute on function public.grant_due_referral_rewards() to service_role;
 
 -- ------------------------------------------------------------------
 -- RPC vendor_referrals(): adaugă qualified_at (afișare „eligibil în N zile")
+-- (drop necesar: `create or replace` nu poate schimba tipul de retur)
 -- ------------------------------------------------------------------
+drop function if exists public.vendor_referrals();
+
 create or replace function public.vendor_referrals()
 returns table (
   id uuid,
@@ -140,6 +143,8 @@ as $$
   where mv.user_id = auth.uid()
   order by r.created_at desc;
 $$;
+
+grant execute on function public.vendor_referrals() to authenticated;
 
 -- ------------------------------------------------------------------
 -- Programează jobul zilnic prin pg_cron (tolerant dacă extensia lipsește)
