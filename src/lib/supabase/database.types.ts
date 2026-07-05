@@ -48,6 +48,7 @@ export type PaymentStatus = "pending" | "succeeded" | "failed" | "refunded";
 export type SubscriptionStatus = "active" | "cancelled" | "paused";
 export type ReviewRole = "vendor" | "couple";
 export type VendorMediaType = "image" | "video";
+export type MessageSender = "couple" | "vendor";
 
 export type ProfileRow = {
   id: string;
@@ -239,6 +240,16 @@ export type VendorMediaRow = {
   created_at: string;
 };
 
+export type MessageRow = {
+  id: string;
+  lead_id: string;
+  sender_role: MessageSender;
+  sender_id: string | null;
+  body: string;
+  read_at: string | null;
+  created_at: string;
+};
+
 export type SubscriptionRow = {
   id: string;
   vendor_id: string;
@@ -371,6 +382,15 @@ export interface Database {
           url: string;
         },
         Partial<VendorMediaRow>
+      >;
+      messages: TableShape<
+        MessageRow,
+        Partial<MessageRow> & {
+          lead_id: string;
+          sender_role: MessageSender;
+          body: string;
+        },
+        Partial<MessageRow>
       >;
     };
     Views: Record<string, never>;
