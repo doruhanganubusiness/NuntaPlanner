@@ -60,7 +60,7 @@ export default async function FurnizoriPage({
           {VENDOR_CATEGORIES_SORTED.map((c) => (
             <Link
               key={c.slug}
-              href={`/furnizori/${c.slug}`}
+              href={`/furnizori/categorie/${c.slug}`}
               className="rounded-full border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
             >
               {c.label}
