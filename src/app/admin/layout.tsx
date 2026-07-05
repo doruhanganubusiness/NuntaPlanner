@@ -1,3 +1,4 @@
+import { AdminNav } from "@/components/admin/admin-nav";
 import { LogoutButton } from "@/components/dashboard/logout-button";
 import { Logo } from "@/components/logo";
 import { getCurrentProfile } from "@/lib/auth/profile";
@@ -31,7 +32,10 @@ export default async function AdminLayout({
           <LogoutButton />
         </div>
       </header>
-      <div className="mx-auto w-full max-w-5xl flex-1 px-6 py-6">{children}</div>
+      <div className="mx-auto w-full max-w-5xl flex-1 px-6 py-6">
+        <AdminNav />
+        <div className="py-6">{children}</div>
+      </div>
     </div>
   );
 }
