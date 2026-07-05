@@ -267,6 +267,7 @@ export type VendorReferralRow = {
   referred_status: VendorStatus;
   referred_verified: boolean;
   status: "joined" | "rewarded";
+  qualified_at: string | null;
   reward_granted_at: string | null;
   created_at: string;
 };

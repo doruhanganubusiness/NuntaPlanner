@@ -108,7 +108,7 @@ function RegisterForm() {
             <p className="mb-4 rounded-md bg-accent px-3 py-2 text-sm text-accent-foreground">
               Ai fost invitat de un furnizor partener. Creează-ți contul și
               listează-te — partenerul tău primește o lună de abonament gratuită
-              după ce ești verificat.
+              după ce ești verificat și activ 30 de zile.
             </p>
           )}
           <form onSubmit={onSubmit} className="space-y-4">

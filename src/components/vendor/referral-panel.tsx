@@ -59,8 +59,9 @@ export function ReferralPanel({
       <div className="rounded-lg border border-border bg-card p-4">
         <p className="text-sm font-medium">Linkul tău de invitație</p>
         <p className="mt-1 text-sm text-muted-foreground">
-          Trimite-l altor furnizori. Când se înregistrează prin el și sunt
-          verificați de platformă, primești <b>o lună de abonament gratuită</b>.
+          Trimite-l altor furnizori. Când se înregistrează prin el, sunt
+          verificați de platformă și rămân activi 30 de zile, primești{" "}
+          <b>o lună de abonament gratuită</b>.
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <code className="rounded-md bg-muted px-3 py-2 text-sm">
@@ -113,6 +114,8 @@ export function ReferralPanel({
                 </div>
                 {r.status === "rewarded" ? (
                   <Badge tone="success">Recompensat · lună gratuită</Badge>
+                ) : r.referred_verified && r.qualified_at ? (
+                  <Badge tone="muted">{eligibilityLabel(r.qualified_at)}</Badge>
                 ) : r.referred_verified ? (
                   <Badge tone="success">Verificat</Badge>
                 ) : (
@@ -125,6 +128,15 @@ export function ReferralPanel({
       </div>
     </div>
   );
+}
+
+/** Câte zile mai sunt până la recompensă (invitat activ 30 de zile). */
+function eligibilityLabel(qualifiedAt: string): string {
+  const eligible = new Date(qualifiedAt);
+  eligible.setDate(eligible.getDate() + 30);
+  const days = Math.ceil((eligible.getTime() - Date.now()) / 86_400_000);
+  if (days <= 0) return "Recompensă în curs";
+  return `Recompensă în ${days} ${days === 1 ? "zi" : "zile"}`;
 }
 
 function Stat({ label, value }: { label: string; value: string | number }) {

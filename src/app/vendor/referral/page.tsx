@@ -33,9 +33,9 @@ export default async function VendorReferralPage() {
       <div>
         <h1 className="text-2xl font-bold">Recomandă furnizori</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Invită colegi din industrie. Pentru fiecare furnizor pe care îl aduci
-          și e verificat de platformă, primești o lună de abonament gratuită
-          (maxim 5 pe lună).
+          Invită colegi din industrie. Pentru fiecare furnizor pe care îl aduci,
+          e verificat de platformă și rămâne activ 30 de zile, primești o lună
+          de abonament gratuită (maxim 5 pe lună).
         </p>
       </div>
 
