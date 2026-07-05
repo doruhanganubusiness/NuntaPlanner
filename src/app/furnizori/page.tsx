@@ -1,13 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
+import { VendorCard } from "@/components/vendors/vendor-card";
 import { COUNTIES } from "@/lib/localities/counties";
 import { pageMeta } from "@/lib/seo";
 import { createClient } from "@/lib/supabase/server";
-import {
-  VENDOR_CATEGORIES_SORTED,
-  categoryLabel,
-} from "@/lib/vendors/categories";
-import { Star } from "lucide-react";
+import { VENDOR_CATEGORIES_SORTED } from "@/lib/vendors/categories";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -56,6 +53,22 @@ export default async function FurnizoriPage({
         </p>
       </section>
 
+      {/* Categorii — pagini dedicate per categorie (linkuri interne, SEO). */}
+      <section>
+        <h2 className="text-lg font-semibold">Explorează pe categorie</h2>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {VENDOR_CATEGORIES_SORTED.map((c) => (
+            <Link
+              key={c.slug}
+              href={`/furnizori/${c.slug}`}
+              className="rounded-full border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+            >
+              {c.label}
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* Filtre — GET form, fără JS, prietenos SEO. */}
       <form
         method="get"
@@ -99,43 +112,7 @@ export default async function FurnizoriPage({
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {list.map((v) => (
-            <Link
-              key={v.id}
-              href={`/furnizori/${v.id}`}
-              className="flex flex-col rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/40"
-            >
-              <div className="flex items-start gap-3">
-                {v.logo_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={v.logo_url}
-                    alt=""
-                    className="h-12 w-12 shrink-0 rounded-md border border-border object-cover"
-                  />
-                ) : (
-                  <div className="h-12 w-12 shrink-0 rounded-md bg-muted" />
-                )}
-                <div className="min-w-0">
-                  <p className="truncate font-medium">{v.business_name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {categoryLabel(v.category)}
-                  </p>
-                  <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-muted-foreground">
-                    <Star className="h-3 w-3 fill-current text-warning" />
-                    {v.rating.toFixed(1)}
-                  </p>
-                </div>
-              </div>
-              {v.description && (
-                <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
-                  {v.description}
-                </p>
-              )}
-              <p className="mt-2 text-xs text-muted-foreground">
-                {v.regions.slice(0, 3).join(", ")}
-                {v.regions.length > 3 ? "…" : ""}
-              </p>
-            </Link>
+            <VendorCard key={v.id} vendor={v} />
           ))}
         </div>
       )}
