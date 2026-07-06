@@ -109,7 +109,7 @@ export default async function VendorOverview() {
             <p className="text-2xl font-bold">{count("new")}</p>
           </CardContent>
         </Card>
-        <Link href="/vendor/leads" className="block">
+        <Link href="/vendor/mesaje" className="block">
           <Card className="h-full transition-colors hover:border-primary/40">
             <CardHeader>
               <CardTitle className="text-sm text-muted-foreground">

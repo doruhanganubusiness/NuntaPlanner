@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 const items = [
   { href: "/vendor", label: "Overview" },
   { href: "/vendor/leads", label: "Lead-uri" },
+  { href: "/vendor/mesaje", label: "Mesaje" },
   { href: "/vendor/galerie", label: "Galerie" },
   { href: "/vendor/subscription", label: "Abonament" },
   { href: "/vendor/referral", label: "Recomandări" },
