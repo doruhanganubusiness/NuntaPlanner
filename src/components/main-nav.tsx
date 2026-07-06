@@ -47,6 +47,8 @@ export function MainNav({ className }: { className?: string }) {
   }, []);
 
   const active = NAV_TREE.find((n) => n.href === openMenu);
+  // Blog are puține subpagini → dropdown simplu pe o coloană; restul rămân mega-menu.
+  const singleColumn = active?.href === "/blog";
 
   return (
     <nav
@@ -123,11 +125,25 @@ export function MainNav({ className }: { className?: string }) {
 
       {active?.children && (
         <div className="absolute right-0 top-full z-50 pt-2">
-          <div className="w-[min(44rem,calc(100vw-2rem))] rounded-xl border border-border bg-card p-4 shadow-xl">
+          <div
+            className={cn(
+              "rounded-xl border border-border bg-card p-4 shadow-xl",
+              singleColumn
+                ? "w-56"
+                : "w-[min(44rem,calc(100vw-2rem))]",
+            )}
+          >
             <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               {active.label}
             </p>
-            <ul className="grid max-h-[70vh] grid-cols-2 gap-x-4 gap-y-0.5 overflow-y-auto sm:grid-cols-3">
+            <ul
+              className={cn(
+                "max-h-[70vh] gap-y-0.5 overflow-y-auto",
+                singleColumn
+                  ? "flex flex-col"
+                  : "grid grid-cols-2 gap-x-4 sm:grid-cols-3",
+              )}
+            >
               {active.children.map((c) => (
                 <li key={c.href}>
                   <Link
