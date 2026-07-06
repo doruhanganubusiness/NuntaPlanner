@@ -7,7 +7,7 @@ import type { VendorLeadRow, VendorStatus } from "@/lib/supabase/database.types"
 import { TIER_PRICING, categoryLabel } from "@/lib/vendors/categories";
 import { getActiveSubscription } from "@/lib/vendors/subscription";
 import { MAX_VENDOR_IMAGES, MAX_VENDOR_VIDEOS } from "@/lib/vendors/media";
-import { Check, X } from "lucide-react";
+import { Check, MessageSquare, X } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -109,16 +109,23 @@ export default async function VendorOverview() {
             <p className="text-2xl font-bold">{count("new")}</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">
-              Convertite
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{count("converted")}</p>
-          </CardContent>
-        </Card>
+        <Link href="/vendor/leads" className="block">
+          <Card className="h-full transition-colors hover:border-primary/40">
+            <CardHeader>
+              <CardTitle className="text-sm text-muted-foreground">
+                Mesaje
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-2xl font-bold">
+                {leads.filter((l) => l.is_unlocked_by_vendor).length}
+              </p>
+              <p className="mt-1 inline-flex items-center gap-1 text-sm text-primary">
+                <MessageSquare className="h-3.5 w-3.5" /> Deschide mesageria
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
