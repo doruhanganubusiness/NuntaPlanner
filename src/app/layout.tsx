@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { SITE_URL } from "@/lib/seo";
 import { Analytics } from "@/components/consent/analytics";
 import { ConsentBanner } from "@/components/consent/consent-banner";
+import { CookieFloatingButton } from "@/components/consent/cookie-floating-button";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -38,6 +39,7 @@ export default function RootLayout({
         {children}
         <Analytics />
         <ConsentBanner />
+        <CookieFloatingButton />
       </body>
     </html>
   );
