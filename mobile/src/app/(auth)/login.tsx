@@ -2,7 +2,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, View } from "react-native";
-import { Button, Card, Field, Muted, Screen } from "../../components/ui";
+import {
+  Button,
+  Card,
+  Field,
+  Muted,
+  PasswordField,
+  Screen,
+} from "../../components/ui";
 import { supabase } from "../../lib/supabase";
 import { theme } from "../../theme";
 
@@ -53,11 +60,10 @@ export default function LoginScreen() {
           placeholder="nume@email.ro"
           autoComplete="email"
         />
-        <Field
+        <PasswordField
           label="Parolă"
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
           placeholder="••••••••"
         />
         <Button title="Autentificare" onPress={signIn} loading={loading} />

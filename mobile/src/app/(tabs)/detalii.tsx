@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, View } from "react-native";
+import { EventsSection } from "../../components/events-section";
 import { Onboarding } from "../../components/onboarding";
 import {
   Button,
@@ -124,6 +125,9 @@ export default function DetaliiScreen() {
       </Card>
 
       <Button title="Salvează detaliile" onPress={save} loading={saving} icon="save-outline" />
+
+      <View style={{ height: 8 }} />
+      <EventsSection />
     </Screen>
   );
 }

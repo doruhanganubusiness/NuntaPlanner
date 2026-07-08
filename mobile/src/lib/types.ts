@@ -123,6 +123,41 @@ export type RsvpRow = {
   created_at: string;
 };
 
+export type LeadStatus = "new" | "unlocked" | "contacted" | "converted" | "lost";
+export type MessageSender = "couple" | "vendor";
+
+export type VendorRow = {
+  id: string;
+  business_name: string;
+  category: string;
+  regions: string[];
+  description: string | null;
+  logo_url: string | null;
+  rating: number;
+  status: string;
+  verified: boolean;
+  county: string | null;
+  locality: string | null;
+};
+
+export type LeadRow = {
+  id: string;
+  wedding_id: string;
+  vendor_id: string;
+  status: LeadStatus;
+  created_at: string;
+};
+
+export type MessageRow = {
+  id: string;
+  lead_id: string;
+  sender_role: MessageSender;
+  sender_id: string | null;
+  body: string;
+  read_at: string | null;
+  created_at: string;
+};
+
 type TableShape<Row, Insert, Update> = {
   Row: Row;
   Insert: Insert;
@@ -167,12 +202,36 @@ export interface Database {
         Partial<RsvpRow> & { wedding_id: string; guest_name: string },
         Partial<RsvpRow>
       >;
+      vendors: TableShape<VendorRow, Partial<VendorRow>, Partial<VendorRow>>;
+      leads: TableShape<
+        LeadRow,
+        Partial<LeadRow> & { wedding_id: string; vendor_id: string },
+        Partial<LeadRow>
+      >;
+      messages: TableShape<
+        MessageRow,
+        Partial<MessageRow> & {
+          lead_id: string;
+          sender_role: MessageSender;
+          body: string;
+        },
+        Partial<MessageRow>
+      >;
     };
     Views: Record<string, never>;
     Functions: {
       create_wedding: {
         Args: { p_name: string; p_region?: string | null };
         Returns: WeddingRow;
+      };
+      create_lead: {
+        Args: {
+          p_wedding_id: string;
+          p_vendor_id: string;
+          p_message?: string | null;
+          p_client_phone?: string | null;
+        };
+        Returns: LeadRow;
       };
     };
     Enums: Record<string, never>;

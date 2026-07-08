@@ -2,7 +2,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, View } from "react-native";
-import { Button, Card, Field, Muted, Screen } from "../../components/ui";
+import {
+  Button,
+  Card,
+  Field,
+  Muted,
+  PasswordField,
+  Screen,
+} from "../../components/ui";
 import { supabase } from "../../lib/supabase";
 import { theme } from "../../theme";
 
@@ -93,11 +100,10 @@ export default function RegisterScreen() {
           onChangeText={setPhone}
           keyboardType="phone-pad"
         />
-        <Field
+        <PasswordField
           label="Parolă (min. 8 caractere)"
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
           placeholder="••••••••"
         />
         <Button title="Creează cont" onPress={signUp} loading={loading} />

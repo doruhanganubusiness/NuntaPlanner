@@ -35,20 +35,20 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="buget"
-        options={{
-          title: "Buget",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="wallet-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="plan"
         options={{
           title: "Plan",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="calculator-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="invitatie"
+        options={{
+          title: "Invitație",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="mail-outline" size={size} color={color} />
           ),
         }}
       />
@@ -61,6 +61,12 @@ export default function TabsLayout() {
           ),
         }}
       />
+
+      {/* Ecrane accesibile din Panou, ascunse din bara de tab-uri. */}
+      <Tabs.Screen name="furnizori" options={{ href: null }} />
+      <Tabs.Screen name="mesaje" options={{ href: null }} />
+      <Tabs.Screen name="membri" options={{ href: null }} />
+      <Tabs.Screen name="chat" options={{ href: null }} />
     </Tabs>
   );
 }

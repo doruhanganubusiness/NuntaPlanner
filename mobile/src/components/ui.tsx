@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import type { ReactNode } from "react";
+import { useRouter } from "expo-router";
+import { useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -20,18 +21,32 @@ export function Screen({
   title,
   subtitle,
   refreshing,
+  back,
 }: {
   children: ReactNode;
   title?: string;
   subtitle?: string;
   refreshing?: boolean;
+  /** Afișează un buton „înapoi" (pentru ecranele deschise din Panou). */
+  back?: boolean;
 }) {
+  const router = useRouter();
   return (
     <ScrollView
       style={styles.screen}
       contentContainerStyle={styles.screenContent}
       keyboardShouldPersistTaps="handled"
     >
+      {back ? (
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={8}
+          style={{ flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 2 }}
+        >
+          <Ionicons name="chevron-back" size={22} color={c.primary} />
+          <Text style={{ color: c.primary, fontWeight: "600", fontSize: 15 }}>Înapoi</Text>
+        </Pressable>
+      ) : null}
       {title ? (
         <View style={styles.header}>
           <Text style={styles.h1}>{title}</Text>
@@ -101,6 +116,40 @@ export function Field({
         {...props}
       />
       {hint ? <Text style={styles.fieldHint}>{hint}</Text> : null}
+    </View>
+  );
+}
+
+/** Câmp de parolă cu buton „ochi" pentru a comuta vizibilitatea. */
+export function PasswordField({
+  label,
+  ...props
+}: TextInputProps & { label: string }) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <View style={styles.field}>
+      <Text style={styles.fieldLabel}>{label}</Text>
+      <View style={styles.passwordWrap}>
+        <TextInput
+          placeholderTextColor={c.mutedForeground}
+          style={[styles.input, styles.passwordInput]}
+          secureTextEntry={!visible}
+          autoCapitalize="none"
+          {...props}
+        />
+        <Pressable
+          onPress={() => setVisible((v) => !v)}
+          hitSlop={10}
+          style={styles.eyeButton}
+          accessibilityLabel={visible ? "Ascunde parola" : "Arată parola"}
+        >
+          <Ionicons
+            name={visible ? "eye-off-outline" : "eye-outline"}
+            size={20}
+            color={c.mutedForeground}
+          />
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -238,6 +287,15 @@ export const styles = StyleSheet.create({
     paddingVertical: 11,
     fontSize: 15,
     color: c.foreground,
+  },
+  passwordWrap: { position: "relative", justifyContent: "center" },
+  passwordInput: { paddingRight: 44 },
+  eyeButton: {
+    position: "absolute",
+    right: 8,
+    height: "100%",
+    justifyContent: "center",
+    paddingHorizontal: 6,
   },
   button: {
     borderWidth: 1,

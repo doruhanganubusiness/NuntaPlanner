@@ -1,4 +1,6 @@
-import { View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { Pressable, Text, View } from "react-native";
 import { Onboarding } from "../../components/onboarding";
 import {
   Card,
@@ -13,12 +15,24 @@ import { formatNum, formatRON, musicLabel } from "../../lib/format";
 import { useWedding } from "../../lib/wedding-context";
 import { theme } from "../../theme";
 
+const QUICK_LINKS: {
+  href: "/furnizori" | "/mesaje" | "/membri";
+  label: string;
+  hint: string;
+  icon: keyof typeof Ionicons.glyphMap;
+}[] = [
+  { href: "/furnizori", label: "Furnizori", hint: "Găsește și contactează furnizori", icon: "storefront-outline" },
+  { href: "/mesaje", label: "Mesaje", hint: "Conversațiile cu furnizorii", icon: "chatbubbles-outline" },
+  { href: "/membri", label: "Membri", hint: "Invită mireasă, mire, nași, părinți", icon: "people-outline" },
+];
+
 function daysUntil(dateStr: string): number {
   return Math.ceil((new Date(dateStr).getTime() - Date.now()) / 86_400_000);
 }
 
 export default function PanouScreen() {
   const { loading, wedding, slots, results } = useWedding();
+  const router = useRouter();
 
   if (loading) return <Loading />;
   if (!wedding) return <Onboarding />;
@@ -107,6 +121,38 @@ export default function PanouScreen() {
             : "Din bugetul tău"
         }
       />
+
+      <Card>
+        <SectionTitle>Planificare</SectionTitle>
+        <View style={{ marginTop: 6 }}>
+          {QUICK_LINKS.map((l, i) => (
+            <Pressable
+              key={l.href}
+              onPress={() => router.push(l.href)}
+              style={({ pressed }) => ({
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 12,
+                paddingVertical: 12,
+                borderBottomWidth: i === QUICK_LINKS.length - 1 ? 0 : 1,
+                borderBottomColor: theme.colors.border,
+                opacity: pressed ? 0.6 : 1,
+              })}
+            >
+              <Ionicons name={l.icon} size={22} color={theme.colors.primary} />
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 15, fontWeight: "600", color: theme.colors.foreground }}>
+                  {l.label}
+                </Text>
+                <Text style={{ fontSize: 12, color: theme.colors.mutedForeground }}>
+                  {l.hint}
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color={theme.colors.mutedForeground} />
+            </Pressable>
+          ))}
+        </View>
+      </Card>
 
       <Card>
         <SectionTitle>Recomandări rapide</SectionTitle>

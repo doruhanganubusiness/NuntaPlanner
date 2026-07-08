@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { runEngine, type EngineResult } from "./compute";
+import { slotDefaults } from "./format";
 import { useSession } from "./session";
 import { supabase } from "./supabase";
 import type { ConfigParameterRow, EventSlotRow, WeddingRow } from "./types";
@@ -22,6 +23,10 @@ type WeddingContextValue = {
   updateWedding: (patch: Partial<WeddingRow>) => Promise<void>;
   /** Creează prima nuntă (onboarding) și o încarcă. */
   createWedding: (name: string, region: string | null) => Promise<void>;
+  /** CRUD pe evenimentele (event_slots) nunții. */
+  addSlot: (slotType: EventSlotRow["slot_type"]) => Promise<void>;
+  updateSlot: (id: string, patch: Partial<EventSlotRow>) => Promise<void>;
+  deleteSlot: (id: string) => Promise<void>;
 };
 
 const WeddingContext = createContext<WeddingContextValue | null>(null);
@@ -102,6 +107,46 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     [load],
   );
 
+  const addSlot = useCallback(
+    async (slotType: EventSlotRow["slot_type"]) => {
+      if (!wedding) return;
+      const defaults = slotDefaults(slotType);
+      const { error } = await supabase.from("event_slots").insert({
+        wedding_id: wedding.id,
+        slot_type: slotType,
+        title: defaults.title,
+        serves_alcohol: defaults.serves_alcohol,
+        serves_full_meal: defaults.serves_full_meal,
+        duration_minutes: defaults.duration_minutes,
+        order_index: slots.length,
+      });
+      if (error) throw error;
+      await load();
+    },
+    [wedding, slots.length, load],
+  );
+
+  const updateSlot = useCallback(
+    async (id: string, patch: Partial<EventSlotRow>) => {
+      const { error } = await supabase
+        .from("event_slots")
+        .update(patch)
+        .eq("id", id);
+      if (error) throw error;
+      await load();
+    },
+    [load],
+  );
+
+  const deleteSlot = useCallback(
+    async (id: string) => {
+      const { error } = await supabase.from("event_slots").delete().eq("id", id);
+      if (error) throw error;
+      await load();
+    },
+    [load],
+  );
+
   const results = useMemo(() => {
     if (!wedding) return null;
     try {
@@ -120,8 +165,22 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       refresh: load,
       updateWedding,
       createWedding,
+      addSlot,
+      updateSlot,
+      deleteSlot,
     }),
-    [loading, wedding, slots, results, load, updateWedding, createWedding],
+    [
+      loading,
+      wedding,
+      slots,
+      results,
+      load,
+      updateWedding,
+      createWedding,
+      addSlot,
+      updateSlot,
+      deleteSlot,
+    ],
   );
 
   return (
