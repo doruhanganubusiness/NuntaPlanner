@@ -2,6 +2,7 @@ import { LogoutButton } from "@/components/dashboard/logout-button";
 import { Logo } from "@/components/logo";
 import { MainNav, MobileNav } from "@/components/main-nav";
 import { NotificationBell } from "@/components/notification-bell";
+import { SiteFooter } from "@/components/site-footer";
 import { VendorNav } from "@/components/vendor/vendor-nav";
 import { getCurrentProfile } from "@/lib/auth/profile";
 import { createClient } from "@/lib/supabase/server";
@@ -38,6 +39,7 @@ export default async function VendorLayout({
         <VendorNav />
         <div className="py-6">{children}</div>
       </div>
+      <SiteFooter />
     </div>
   );
 }

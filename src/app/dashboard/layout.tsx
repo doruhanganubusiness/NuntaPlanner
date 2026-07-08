@@ -2,6 +2,7 @@ import { LogoutButton } from "@/components/dashboard/logout-button";
 import { Logo } from "@/components/logo";
 import { MainNav, MobileNav } from "@/components/main-nav";
 import { NotificationBell } from "@/components/notification-bell";
+import { SiteFooter } from "@/components/site-footer";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -41,6 +42,7 @@ export default async function DashboardLayout({
         </div>
       </header>
       {children}
+      <SiteFooter />
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { CookiePreferencesButton } from "@/components/consent/cookie-preferences
 export const metadata: Metadata = pageMeta({
   title: "Politica de cookies — NuntaPlanner",
   description:
-    "Ce cookie-uri folosește NuntaPlanner: strict necesare și de analiză — Google Analytics 4, Tag Manager și Search Console.",
+    "Ce cookie-uri folosește NuntaPlanner: strict necesare, preferințe, statistici (Google Analytics 4 / Tag Manager) și marketing.",
   path: "/politica-cookies",
 });
 
@@ -23,7 +23,7 @@ const necessary: Cookie[] = [
     name: "np_consent",
     provider: "NuntaPlanner",
     purpose:
-      "Reține preferințele tale de cookies (acceptat / respins / pe categorii), ca să nu te întrebăm de fiecare dată.",
+      "Reține preferințele tale de cookies (pe categorii), ca să nu te întrebăm de fiecare dată.",
     duration: "6 luni",
   },
   {
@@ -41,7 +41,17 @@ const necessary: Cookie[] = [
   },
 ];
 
-const analytics: Cookie[] = [
+const preferences: Cookie[] = [
+  {
+    name: "np_prefs / localStorage",
+    provider: "NuntaPlanner",
+    purpose:
+      "Reține opțiuni precum localitatea sau alte setări introduse de tine, ca să nu le reintroduci.",
+    duration: "Până la 1 an / persistent",
+  },
+];
+
+const statistics: Cookie[] = [
   {
     name: "_ga",
     provider: "Google Analytics 4",
@@ -65,6 +75,29 @@ const analytics: Cookie[] = [
     provider: "Google Analytics",
     purpose: "Limitează rata de trimitere a cererilor (throttling).",
     duration: "1 minut",
+  },
+];
+
+const marketing: Cookie[] = [
+  {
+    name: "_gcl_au",
+    provider: "Google Ads",
+    purpose:
+      "Măsoară eficiența reclamelor (conversion linker), pentru campaniile publicitare.",
+    duration: "90 de zile",
+  },
+  {
+    name: "IDE / test_cookie",
+    provider: "Google DoubleClick",
+    purpose:
+      "Afișează reclame relevante și măsoară performanța lor pe alte platforme.",
+    duration: "test_cookie: 15 min · IDE: până la 13 luni",
+  },
+  {
+    name: "NID",
+    provider: "Google",
+    purpose: "Reține preferințe pentru personalizarea reclamelor Google.",
+    duration: "Până la 6 luni",
   },
 ];
 
@@ -117,47 +150,69 @@ export default function PoliticaCookiesPage() {
         tehnologii similare (localStorage, pixeli).
       </p>
 
-      <h2>2. Categoriile de cookies pe care le folosim</h2>
-
-      <h3>a. Strict necesare (nu pot fi dezactivate)</h3>
+      <h2>2. Categoriile de cookies</h2>
       <p>
-        Sunt esențiale pentru funcționarea site-ului: autentificare, securitate
-        și reținerea opțiunii tale privind cookie-urile. Se instalează fără a fi
-        nevoie de consimțământ.
+        Îți grupăm cookie-urile în patru categorii. Doar cele strict necesare se
+        activează automat; pentru restul îți cerem consimțământul în bannerul de
+        cookies.
+      </p>
+
+      <h3>a. Strict necesare (mereu active)</h3>
+      <p>
+        Esențiale pentru funcționarea site-ului: autentificare, securitate,
+        păstrarea sesiunii și a alegerii tale privind cookie-urile. Nu pot fi
+        dezactivate.
       </p>
       <CookieTable rows={necessary} />
 
-      <h3>b. De analiză și performanță (necesită consimțământ)</h3>
+      <h3>b. Preferințe (necesită consimțământ)</h3>
       <p>
-        Ne ajută să înțelegem cum este folosit site-ul, ce pagini sunt populare și
-        unde putem îmbunătăți. Aceste cookie-uri se activează doar după ce le
-        accepți în bannerul de consimțământ. Le gestionăm prin{" "}
-        <strong>Google Tag Manager (GTM)</strong>, care încarcă{" "}
-        <strong>Google Analytics 4 (GA4)</strong>.
+        Rețin opțiuni precum limba, localitatea sau alte setări, ca să nu le
+        reintroduci de fiecare dată.
       </p>
-      <CookieTable rows={analytics} />
+      <CookieTable rows={preferences} />
 
-      <h2>3. Google Tag Manager, Google Analytics 4 și Search Console</h2>
+      <h3>c. Statistici (necesită consimțământ)</h3>
+      <p>
+        Ne ajută să înțelegem anonim cum este folosit site-ul (pagini vizitate,
+        trafic), prin <strong>Google Analytics 4</strong>, încărcat prin{" "}
+        <strong>Google Tag Manager</strong>, ca să îl îmbunătățim. Folosim IP-uri
+        anonimizate.
+      </p>
+      <CookieTable rows={statistics} />
+
+      <h3>d. Marketing (necesită consimțământ)</h3>
+      <p>
+        Folosite pentru a măsura campaniile și a-ți afișa conținut relevant pe
+        alte platforme (de ex. Google Ads). Aceste cookie-uri se instalează doar
+        dacă accepți categoria de marketing și în funcție de etichetele
+        configurate în Google Tag Manager.
+      </p>
+      <CookieTable rows={marketing} />
+
+      <h2>3. Google Tag Manager, Analytics 4, Search Console și Consent Mode v2</h2>
       <ul>
         <li>
-          <strong>Google Tag Manager (GTM):</strong> este un sistem de gestionare
-          a etichetelor. GTM în sine nu setează, de regulă, cookie-uri de
-          urmărire, dar este containerul care încarcă alte instrumente (precum
-          GA4). Îl activăm doar după acordul tău pentru categoria de analiză.
+          <strong>Google Tag Manager (GTM):</strong> containerul care încarcă și
+          gestionează etichetele (analytics, marketing). GTM în sine nu setează,
+          de regulă, cookie-uri de urmărire.
         </li>
         <li>
-          <strong>Google Analytics 4 (GA4):</strong> serviciu de analiză web al
-          Google, care folosește cookie-urile de mai sus (<code>_ga</code>,{" "}
-          <code>_ga_*</code>, <code>_gid</code>) pentru a genera statistici
-          agregate despre trafic. Folosim IP-uri anonimizate și modul de
-          consimțământ (Consent Mode v2).
+          <strong>Google Analytics 4 (GA4):</strong> serviciul de analiză web, cu
+          cookie-urile <code>_ga</code>, <code>_ga_*</code>, <code>_gid</code>,
+          pentru statistici agregate de trafic.
         </li>
         <li>
           <strong>Google Search Console (GSC):</strong> îl folosim pentru a
-          monitoriza prezența site-ului în căutarea Google. Verificarea
-          proprietății se face printr-o etichetă meta sau prin DNS și, de regulă,{" "}
-          <strong>nu instalează cookie-uri</strong> pe dispozitivul tău. Google
-          poate colecta date de căutare agregate, conform politicilor sale.
+          monitoriza prezența site-ului în căutarea Google. Verificarea se face
+          printr-o etichetă meta sau prin DNS și, de regulă,{" "}
+          <strong>nu instalează cookie-uri</strong> pe dispozitivul tău.
+        </li>
+        <li>
+          <strong>Consent Mode v2:</strong> înainte de a încărca etichetele
+          Google, setăm consimțământul implicit pe „refuzat” pentru statistici și
+          marketing. Abia după acceptul tău transmitem „granted”, iar Google
+          folosește până atunci doar semnale fără cookies.
         </li>
       </ul>
       <p>
@@ -175,8 +230,8 @@ export default function PoliticaCookiesPage() {
       <h2>4. Cum îți gestionezi consimțământul</h2>
       <p>
         La prima vizită îți afișăm un banner unde poți accepta toate cookie-urile,
-        le poți respinge pe cele neesențiale sau poți alege pe categorii. Îți poți
-        schimba oricând opțiunea:
+        le poți respinge pe cele neesențiale sau poți alege pe categorii
+        (Preferințe, Statistici, Marketing). Îți poți schimba oricând opțiunea:
       </p>
       <p>
         <CookiePreferencesButton />
