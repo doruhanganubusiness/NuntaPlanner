@@ -9,7 +9,7 @@ const sharp = require(path.join(
   "sharp",
 ));
 
-const SRC = path.join(__dirname, "..", "..", "images", "icon-app.jpg");
+const SRC = path.join(__dirname, "..", "..", "images", "logo.png");
 const OUT = path.join(__dirname, "..", "assets", "images");
 const white = { r: 255, g: 255, b: 255, alpha: 1 };
 const clear = { r: 255, g: 255, b: 255, alpha: 0 };
