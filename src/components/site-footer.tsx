@@ -1,6 +1,14 @@
+import { CookiePreferencesButton } from "@/components/consent/cookie-preferences-button";
 import { NAV_TREE } from "@/lib/site-nav";
 import Link from "next/link";
 import { Fragment } from "react";
+
+/** Paginile legale, afișate pe un rând separat în footer. */
+const LEGAL_LINKS = [
+  { href: "/termeni-si-conditii", label: "Termeni și condiții" },
+  { href: "/confidentialitate", label: "Confidențialitate" },
+  { href: "/politica-cookies", label: "Politica de cookies" },
+];
 
 /**
  * Footer-ul site-ului: fundal contrastant (închis), paginile-părinte (cu separator
@@ -39,7 +47,32 @@ export function SiteFooter() {
           </nav>
         </div>
 
-        <div className="mt-10 flex flex-col items-center gap-2 border-t border-background/15 pt-6 text-center text-sm text-background/60 md:flex-row md:justify-between md:text-left">
+        <nav className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-background/15 pt-6">
+          {LEGAL_LINKS.map((item, i) => (
+            <Fragment key={item.href}>
+              {i > 0 && (
+                <span aria-hidden className="text-background/30">
+                  ·
+                </span>
+              )}
+              <Link
+                href={item.href}
+                className="text-sm font-medium text-background/85 underline-offset-4 transition-colors hover:text-background hover:underline"
+              >
+                {item.label}
+              </Link>
+            </Fragment>
+          ))}
+          <span aria-hidden className="text-background/30">
+            ·
+          </span>
+          <CookiePreferencesButton
+            label="Setări cookies"
+            className="text-sm font-medium text-background/85 underline-offset-4 transition-colors hover:text-background hover:underline"
+          />
+        </nav>
+
+        <div className="mt-8 flex flex-col items-center gap-2 border-t border-background/15 pt-6 text-center text-sm text-background/60 md:flex-row md:justify-between md:text-left">
           <span>
             ©{" "}
             <Link

@@ -64,6 +64,9 @@ export async function entriesFor(type: SitemapType): Promise<UrlEntry[]> {
         "/furnizori",
         "/zone",
         "/blog",
+        "/termeni-si-conditii",
+        "/confidentialitate",
+        "/politica-cookies",
       ];
       return paths.map((p) => ({
         loc: u(p),
